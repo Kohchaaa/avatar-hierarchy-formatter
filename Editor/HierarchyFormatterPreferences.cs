@@ -40,7 +40,11 @@ namespace Kohcha.AvatarHierarchyFormatter
                             }
                         }
                     }
-                    
+
+                    //===================================================
+                    // TreeView設定
+                    HierarchyFormatterSettings.IsEnabled_TreeView = EditorGUILayout.Toggle("ツリービューの線", HierarchyFormatterSettings.IsEnabled_TreeView);
+
 
                     if (EditorGUI.EndChangeCheck())
                     {

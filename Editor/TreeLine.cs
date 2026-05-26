@@ -13,6 +13,8 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         private static void DrawTreeLine(int instanceID, Rect selectionRect)
         {
+            if (!HierarchyFormatterSettings.IsEnabled_TreeView) return;
+
             if (HierarchyCacheManager.ItemCaches == null || !HierarchyCacheManager.ItemCaches.TryGetValue(instanceID, out var cacheData))
             {
                 return;

@@ -5,6 +5,8 @@ namespace Kohcha.AvatarHierarchyFormatter
 {
     public static class HierarchyFormatterSettings
     {
+        //=========================================================
+        // アバターハイライト
         private const string KeyEnabled_AvatarHighlight = "Kohcha.AvatarHierarchyFormatter.Enabled_AvatarHighlight";
         private const string KeyBaseColor = "Kohcha.AvatarHierarchyFormatter.BaseColor";
 
@@ -17,9 +19,21 @@ namespace Kohcha.AvatarHierarchyFormatter
         public static Color ContentColor { get; private set; }
         public static Color LineColor { get; private set; }
 
+        //=========================================================
+        // TreeView
+        private const string KeyEnabled_TreeLine = "Kohcha.AvatarHierarchyFormatter.Enabled_TreeLine";
+        
+        public static bool IsEnabled_TreeView = true;
+
+
+
+        
+
         [InitializeOnLoadMethod]
         private static void LoadSettings()
         {
+            //=========================================================
+            // アバターハイライト
             IsEnabled_AvatarHighlight = EditorPrefs.GetBool(KeyEnabled_AvatarHighlight, true);
 
             string colorHex = EditorPrefs.GetString(KeyBaseColor, DefaultColorHEX);
@@ -29,14 +43,25 @@ namespace Kohcha.AvatarHierarchyFormatter
             }
 
             UpdateCalculatedColors();
+
+            //=========================================================
+            // TreeLine
+            IsEnabled_TreeView = EditorPrefs.GetBool(KeyEnabled_TreeLine, true);
         }
 
         public static void SaveSettings()
         {
+            //=========================================================
+            // アバターハイライト
             EditorPrefs.SetBool(KeyEnabled_AvatarHighlight, IsEnabled_AvatarHighlight);
             EditorPrefs.SetString(KeyBaseColor, ColorUtility.ToHtmlStringRGB(BaseColor));
 
             UpdateCalculatedColors();
+
+            //=========================================================
+            // TreeLine
+            EditorPrefs.SetBool(KeyEnabled_TreeLine, IsEnabled_TreeView);
+
 
             EditorApplication.RepaintHierarchyWindow();
         }
