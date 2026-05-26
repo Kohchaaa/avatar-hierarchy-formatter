@@ -26,15 +26,39 @@ namespace Kohcha.AvatarHierarchyFormatter
 
             foreach (var desc in descriptors)
             {
-                int rootID = desc.gameObject.GetInstanceID();
+                Transform rootXform = desc.transform;
+                int rootId = rootXform.gameObject.GetInstanceID();
 
-                Transform[] allChildren = desc.GetComponentsInChildren<Transform>(true);
+                List<bool> currentLineStates = new List<bool>();
 
-                foreach (Transform child in allChildren)
-                {
-                    int childId = child.gameObject.GetInstanceID();
-                    ItemCaches[childId] = new CacheData(rootID);
-                }
+                BuildTreeCacheRecursive(rootXform, rootId, 0, false, currentLineStates);
+            }
+        }
+
+        private static void BuildTreeCacheRecursive(Transform current, int rootId, int depth, bool isLastChild, List<bool> lineStates)
+        {
+            int currentId = current.gameObject.GetInstanceID();
+
+            bool[] flags = new bool[depth];
+            for (int i = 0; i < depth; i++)
+            {
+                flags[i] = lineStates[i];
+            }
+
+            ItemCaches[currentId] = new CacheData(rootId, depth, isLastChild, flags);
+
+            int childCount = current.childCount;
+            for (int i = 0; i < childCount; i++)
+            {
+                Transform child = current.GetChild(i);
+
+                bool childIsLast = (i == childCount - 1);
+
+                lineStates.Add(!childIsLast);
+
+                BuildTreeCacheRecursive(child, rootId, depth + 1, childIsLast, lineStates);
+
+                lineStates.RemoveAt(lineStates.Count - 1);
             }
         }
     }

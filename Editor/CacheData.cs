@@ -1,10 +1,17 @@
 public struct CacheData
 {
     public int AvatarRootId;
-    // 将来的に自分のオブジェクトが持つコンポーネントの情報とか入れる予定
+    
+    public int IndentLevel;
+    public bool IsLastChild;
 
-    public CacheData(int id)
+    public bool[] ParentLineFlags;
+
+    public CacheData(int id, int indentLevel, bool isLastChild, bool[] flags)
     {
         AvatarRootId = id;
+        IndentLevel = indentLevel;
+        IsLastChild = isLastChild;
+        ParentLineFlags = flags;
     }
 }
