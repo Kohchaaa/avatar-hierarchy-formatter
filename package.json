@@ -1,21 +1,21 @@
 {
-  "name": "jp.kohchaaa.template",
+  "name": "jp.kohchaaa.avatar-hierarchy-formatter",
   "version": "0.0.0",
-  "displayName": "Package Name",
-  "description": "Description",
+  "displayName": "Avatar Hierarchy Formatter",
+  "description": "Avatar Hierarchy Formatter",
   "unity": "2022.3",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Kohchaaa/vpm-package-template.git"
+    "url": "https://github.com/Kohchaaa/avatar-hierarchy-formatter.git"
   },
   "vpmDependencies": {
 
   },
   "keywords": [
     "VRChat",
-    "keyword1",
-    "keyword2..."
+    "Avatar",
+    "Hirarchy"
   ],
   "author": {
     "name": "Kohchaaa",
