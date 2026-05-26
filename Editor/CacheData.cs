@@ -7,11 +7,14 @@ public struct CacheData
 
     public bool[] ParentLineFlags;
 
-    public CacheData(int id, int indentLevel, bool isLastChild, bool[] flags)
+    public bool HasChildren;
+
+    public CacheData(int id, int indentLevel, bool isLastChild, bool[] flags, bool hasChildren)
     {
         AvatarRootId = id;
         IndentLevel = indentLevel;
         IsLastChild = isLastChild;
         ParentLineFlags = flags;
+        HasChildren = hasChildren;
     }
 }

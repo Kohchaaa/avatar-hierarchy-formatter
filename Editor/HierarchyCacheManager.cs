@@ -39,15 +39,17 @@ namespace Kohcha.AvatarHierarchyFormatter
         {
             int currentId = current.gameObject.GetInstanceID();
 
+            int childCount = current.childCount;
+            bool hasChildren = (childCount > 0);
+
             bool[] flags = new bool[depth];
             for (int i = 0; i < depth; i++)
             {
                 flags[i] = lineStates[i];
             }
 
-            ItemCaches[currentId] = new CacheData(rootId, depth, isLastChild, flags);
+            ItemCaches[currentId] = new CacheData(rootId, depth, isLastChild, flags, hasChildren);
 
-            int childCount = current.childCount;
             for (int i = 0; i < childCount; i++)
             {
                 Transform child = current.GetChild(i);
