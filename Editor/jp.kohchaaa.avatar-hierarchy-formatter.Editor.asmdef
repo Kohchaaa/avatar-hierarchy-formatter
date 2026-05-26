@@ -1,8 +1,12 @@
 {
-    "name": "jp.kohchaaa.template",
+    "name": "avatar-hierarchy-formatter.Editor",
     "rootNamespace": "",
-    "references": [],
-    "includePlatforms": [],
+    "references": [
+        "jp.kohchaaa.avatar-hierarchy-formatter"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
