@@ -1,0 +1,56 @@
+# ==========================================
+# Unity Generated File
+# ==========================================
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+*.log
+sysinfo.txt
+mono_crash.*
+
+# ==========================================
+# GitHub Actions & Build Outputs
+# ==========================================
+*.zip
+*.unitypackage
+*.unitypackage.meta
+metaList
+
+# ==========================================
+# IDE & Code Editors
+# ==========================================
+.vs/
+.idea/
+.vscode/
+.consulo/
+*.csproj
+*.unityproj
+*.sln
+*.slnx
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.DotSettings.user
+
+# ==========================================
+# OS Generated Files
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
