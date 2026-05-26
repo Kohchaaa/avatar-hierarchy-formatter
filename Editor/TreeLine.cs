@@ -42,7 +42,7 @@ namespace Kohcha.AvatarHierarchyFormatter
             if (cacheData.IndentLevel > 0)
             {
                 int myTargetIndex = cacheData.IndentLevel - 1;
-                float myLineX = baseLeftX + (myTargetIndex * indentWidth) + (indentWidth / 2f) - 1  ;
+                float myLineX = baseLeftX + (myTargetIndex * indentWidth) + (indentWidth / 2f) - 1;
 
                 if (cacheData.IsLastChild)
                 {
@@ -55,7 +55,9 @@ namespace Kohcha.AvatarHierarchyFormatter
                     EditorGUI.DrawRect(vLine, lineColor);
                 }
 
-                Rect hLine = new Rect(myLineX, y + halfH, 6f, 1f);
+                float hLineLength = cacheData.HasChildren ? 8f : 19f;
+
+                Rect hLine = new Rect(myLineX, y + halfH, hLineLength, 1f);
                 EditorGUI.DrawRect(hLine, lineColor);
             }
         }
