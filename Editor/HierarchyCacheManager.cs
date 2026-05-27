@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using VRC.Core;
 using VRC.SDK3.Avatars.Components;
 
 namespace Kohcha.AvatarHierarchyFormatter
@@ -41,7 +42,11 @@ namespace Kohcha.AvatarHierarchyFormatter
             int currentId = current.gameObject.GetInstanceID();
 
             // コンポーネント収集
-            var components = current.gameObject.GetComponents<Component>().Where(c => c is not Transform).ToArray();
+            var components = current.gameObject.GetComponents<Component>()
+                .Where(c => c is not Transform)
+                .Where(c => c is not Animator)
+                .Where(c => c is not PipelineManager)
+                .ToArray();
             List<ComponentIconInfo> iconList = new List<ComponentIconInfo>();
 
             foreach(var c in components)
@@ -112,5 +117,27 @@ namespace Kohcha.AvatarHierarchyFormatter
 
             return info;
         }
-    }
+
+        /// <summary>
+        /// 特定のオブジェクトの特定のコンポーネントの有効フラグだけをキャッシュ上で書き換え、即座に再描画する
+        /// </summary>
+        public static void UpdateSingleComponentCache(int gameObjectInstanceID, int componentInstanceID, bool newEnabledState)
+        {
+            if (ItemCaches.TryGetValue(gameObjectInstanceID, out var cacheData))
+            {
+                for (int i = 0; i < cacheData.ComponentIcons.Length; i++)
+                {
+                    if (cacheData.ComponentIcons[i].InstanceID == componentInstanceID)
+                    {
+                        cacheData.ComponentIcons[i].IsEnabled = newEnabledState;
+                        break;
+                    }
+                }
+
+                ItemCaches[gameObjectInstanceID] = cacheData;
+
+                EditorApplication.RepaintHierarchyWindow();
+            }
+        }
+    }    
 }
