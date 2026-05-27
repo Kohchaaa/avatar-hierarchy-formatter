@@ -9,7 +9,7 @@ using VRC.SDK3.Avatars.Components;
 namespace Kohcha.AvatarHierarchyFormatter
 {
     [InitializeOnLoad]
-    public static class HierarchyCacheManager
+    public static partial class HierarchyCacheManager
     {
         public static Dictionary<int, CacheData> ItemCaches = new Dictionary<int, CacheData>();
 
