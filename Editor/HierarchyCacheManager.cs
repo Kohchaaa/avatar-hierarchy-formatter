@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
@@ -39,6 +40,16 @@ namespace Kohcha.AvatarHierarchyFormatter
         {
             int currentId = current.gameObject.GetInstanceID();
 
+            // コンポーネント収集
+            var components = current.gameObject.GetComponents<Component>().Where(c => c is not Transform).ToArray();
+            List<ComponentIconInfo> iconList = new List<ComponentIconInfo>();
+
+            foreach(var c in components)
+            {
+                iconList.Add(getComponentIconInfo(c));
+            }
+
+
             int childCount = current.childCount;
             bool hasChildren = (childCount > 0);
 
@@ -48,7 +59,14 @@ namespace Kohcha.AvatarHierarchyFormatter
                 flags[i] = lineStates[i];
             }
 
-            ItemCaches[currentId] = new CacheData(rootId, depth, isLastChild, flags, hasChildren);
+            ItemCaches[currentId] = new CacheData(
+                rootId, 
+                depth, 
+                isLastChild, 
+                flags, 
+                hasChildren,
+                iconList.ToArray()
+            );
 
             for (int i = 0; i < childCount; i++)
             {
@@ -62,6 +80,37 @@ namespace Kohcha.AvatarHierarchyFormatter
 
                 lineStates.RemoveAt(lineStates.Count - 1);
             }
+        }
+
+        private static ComponentIconInfo getComponentIconInfo(Component c)
+        {
+            ComponentIconInfo info = new ComponentIconInfo();
+
+            if (c == null)
+            {
+                // Missingスクリプトの場合
+                info.IsMissing = true;
+                info.CanToggle = false;
+            }
+            else
+            {
+                info.IsMissing = false;
+                info.InstanceID = c.GetInstanceID();
+
+                // Unity標準のミニアイコンをバックエンド側で一発取得
+                info.Icon = AssetPreview.GetMiniThumbnail(c);
+
+                // トグル可能なコンポーネントかどうかの判定と有効状態の取得
+                switch (c)
+                {
+                    case Renderer r: info.IsEnabled = r.enabled; info.CanToggle = true; break;
+                    case Behaviour b: info.IsEnabled = b.enabled; info.CanToggle = true; break;
+                    case Collider col: info.IsEnabled = col.enabled; info.CanToggle = true; break;
+                    default: info.IsEnabled = true; info.CanToggle = false; break;
+                }
+            }
+
+            return info;
         }
     }
 }

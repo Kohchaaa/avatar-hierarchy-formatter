@@ -13,13 +13,16 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         public bool HasChildren;
 
-        public CacheData(int id, int indentLevel, bool isLastChild, bool[] flags, bool hasChildren)
+        public ComponentIconInfo[] ComponentIcons;
+
+        public CacheData(int id, int indentLevel, bool isLastChild, bool[] flags, bool hasChildren, ComponentIconInfo[] componentIcons)
         {
             AvatarRootId = id;
             IndentLevel = indentLevel;
             IsLastChild = isLastChild;
             ParentLineFlags = flags;
             HasChildren = hasChildren;
+            ComponentIcons = componentIcons;
         }
     }
 
