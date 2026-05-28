@@ -10,7 +10,9 @@ namespace Kohcha.AvatarHierarchyFormatter
     {
         public string GroupName;
         public List<Type> TargetTypes;
+        public string ClassNamePrefix;
         public string IconPathOrName;
+        public string IconGUID;
         public bool IsCustomTexture;
         private Texture2D _cachedTexture;
 
@@ -18,11 +20,15 @@ namespace Kohcha.AvatarHierarchyFormatter
         {
             if (_cachedTexture != null) return _cachedTexture;
 
-            if (IsCustomTexture)
+            if (IsCustomTexture && !string.IsNullOrEmpty(IconGUID))
             {
-                _cachedTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(IconPathOrName);
+                string assetPath = AssetDatabase.GUIDToAssetPath(IconGUID);
+                if (!string.IsNullOrEmpty(assetPath))
+                {
+                    _cachedTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(assetPath);
+                }
             }
-            else
+            else if (!string.IsNullOrEmpty(IconPathOrName))
             {
                 var content = EditorGUIUtility.IconContent(IconPathOrName);
                 _cachedTexture = content != null ? content.image as Texture2D : null;
@@ -31,26 +37,30 @@ namespace Kohcha.AvatarHierarchyFormatter
             return _cachedTexture;
         }
     }
-
     public static partial class HierarchyCacheManager
     {
         private static readonly List<CustomIconDefinition> IconDefinitions = new List<CustomIconDefinition>
-        {
-            new CustomIconDefinition
             {
-                GroupName = "Colliders",
-                TargetTypes = new List<Type> { typeof(BoxCollider), typeof(SphereCollider), typeof(CapsuleCollider), typeof(MeshCollider) },
-                IconPathOrName = "Assets/Kohcha/AvatarHierarchyFormatter/Icons/CustomColliderIcon.png",
-                IsCustomTexture = true
-            },
+                new CustomIconDefinition
+                {
+                    GroupName = "ModularAvatar",
+                    ClassNamePrefix = "MA",
+                    IsCustomTexture = false
+                },
+                new CustomIconDefinition
+                {
+                    GroupName = "Colliders",
+                    TargetTypes = new List<Type> { typeof(BoxCollider), typeof(SphereCollider), typeof(CapsuleCollider), typeof(MeshCollider) },
+                    IsCustomTexture = false
+                },
 
-            new CustomIconDefinition
-            {
-                GroupName = "PhysBone",
-                TargetTypes = new List<Type> { typeof(VRCPhysBone) },
-                IconPathOrName = "d_PhysicsMaterial Icon", // Unity内部のカッコいいアイコン名を指定
-                IsCustomTexture = false
-            }
-        };
+                new CustomIconDefinition
+                {
+                    GroupName = "PhysBone",
+                    TargetTypes = new List<Type> { typeof(VRCPhysBone) },
+                    IconGUID = "78013448b2cd2b949b5ba0e7118d7ab0",
+                    IsCustomTexture = true
+                }
+            };
     }
 }

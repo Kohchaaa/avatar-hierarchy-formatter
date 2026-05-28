@@ -33,6 +33,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         public bool CanToggle;
         public bool IsMissing;
         public int InstanceID;
+        public int[] MultiInstanceIDs;
     }
 }
 

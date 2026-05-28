@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -24,7 +25,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         {
             ItemCaches.Clear();
 
-            var descriptors = Object.FindObjectsByType<VRCAvatarDescriptor>(FindObjectsSortMode.None);
+            var descriptors = UnityEngine.Object.FindObjectsByType<VRCAvatarDescriptor>(FindObjectsSortMode.None);
 
             foreach (var desc in descriptors)
             {
@@ -47,13 +48,8 @@ namespace Kohcha.AvatarHierarchyFormatter
                 .Where(c => c is not Animator)
                 .Where(c => c is not PipelineManager)
                 .ToArray();
-            List<ComponentIconInfo> iconList = new List<ComponentIconInfo>();
 
-            foreach(var c in components)
-            {
-                iconList.Add(getComponentIconInfo(c));
-            }
-
+            ComponentIconInfo[] icons = ConvertToIconInfos(components);
 
             int childCount = current.childCount;
             bool hasChildren = (childCount > 0);
@@ -65,12 +61,12 @@ namespace Kohcha.AvatarHierarchyFormatter
             }
 
             ItemCaches[currentId] = new CacheData(
-                rootId, 
-                depth, 
-                isLastChild, 
-                flags, 
+                rootId,
+                depth,
+                isLastChild,
+                flags,
                 hasChildren,
-                iconList.ToArray()
+                icons
             );
 
             for (int i = 0; i < childCount; i++)
@@ -93,7 +89,6 @@ namespace Kohcha.AvatarHierarchyFormatter
 
             if (c == null)
             {
-                // Missingスクリプトの場合
                 info.IsMissing = true;
                 info.CanToggle = false;
             }
@@ -102,10 +97,8 @@ namespace Kohcha.AvatarHierarchyFormatter
                 info.IsMissing = false;
                 info.InstanceID = c.GetInstanceID();
 
-                // Unity標準のミニアイコンをバックエンド側で一発取得
                 info.Icon = AssetPreview.GetMiniThumbnail(c);
 
-                // トグル可能なコンポーネントかどうかの判定と有効状態の取得
                 switch (c)
                 {
                     case Renderer r: info.IsEnabled = r.enabled; info.CanToggle = true; break;
@@ -139,5 +132,146 @@ namespace Kohcha.AvatarHierarchyFormatter
                 EditorApplication.RepaintHierarchyWindow();
             }
         }
-    }    
+
+        /// <summary>
+        /// GameObjectから取得した生のコンポーネント配列を、描画用のクリーンなアイコン情報リストに変換・集約する
+        /// </summary>
+        public static ComponentIconInfo[] ConvertToIconInfos(Component[] rawComponents)
+        {
+            if (rawComponents == null || rawComponents.Length == 0)
+                return Array.Empty<ComponentIconInfo>();
+
+            List<ComponentIconInfo> finalIcons = new List<ComponentIconInfo>();
+            HashSet<Component> processedComponents = new HashSet<Component>();
+
+            // ---------------------------------------------------------
+            // 処理1: グループ化（まとめ）ルールの適用
+            // ---------------------------------------------------------
+            foreach (var def in IconDefinitions)
+            {
+                List<Component> matchedComponents = new List<Component>();
+
+                foreach (var comp in rawComponents)
+                {
+                    if (comp == null || !comp || processedComponents.Contains(comp) || comp is Transform) continue;
+
+                    Type compType = comp.GetType();
+                    if (compType == null) continue;
+
+                    string className = compType.Name;
+                    // フルネーム（例: nadena.dev.modular_avatar.runtime.MAMergeAnimator）を取得
+                    string fullTypeName = compType.FullName ?? "";
+
+                    bool isMatch = false;
+
+                    // A. MAの判定：クラス名かフルネーム（名前空間）にMA関連のキーワードが入っているか
+                    if (!string.IsNullOrEmpty(def.ClassNamePrefix) && def.GroupName == "ModularAvatar")
+                    {
+                        // 頭に「MA」が付くか、または名前空間に「nadena」か「ModularAvatar」が含まれていればMAの仲間とみなす！
+                        if (className.StartsWith(def.ClassNamePrefix, StringComparison.Ordinal) ||
+                            fullTypeName.Contains("nadena") ||
+                            fullTypeName.Contains("ModularAvatar"))
+                        {
+                            isMatch = true;
+                        }
+                    }
+                    // B. 通常の接頭辞（Prefix）判定
+                    else if (!string.IsNullOrEmpty(def.ClassNamePrefix))
+                    {
+                        if (className.StartsWith(def.ClassNamePrefix, StringComparison.Ordinal))
+                        {
+                            isMatch = true;
+                        }
+                    }
+                    // C. 従来の特定の型リスト判定（コライダー等）
+                    else if (def.TargetTypes != null)
+                    {
+                        if (def.TargetTypes.Exists(t => t != null && (t == compType || compType.IsSubclassOf(t))))
+                        {
+                            isMatch = true;
+                        }
+                    }
+
+                    if (isMatch)
+                    {
+                        matchedComponents.Add(comp);
+                    }
+                }
+
+                // マッチしたコンポーネント群を1つのグループアイコンに集約
+                if (matchedComponents.Count > 0)
+                {
+                    bool isAnyEnabled = false;
+                    List<int> ids = new List<int>();
+
+                    foreach (var c in matchedComponents)
+                    {
+                        // ここでも念のためオブジェクトの生存をチェック
+                        if (c == null || !c) continue;
+
+                        ids.Add(c.GetInstanceID());
+
+                        if (c is Behaviour b && b.enabled) isAnyEnabled = true;
+                        else if (c is Collider col && col.enabled) isAnyEnabled = true;
+                        else if (c is Renderer r && r.enabled) isAnyEnabled = true;
+                    }
+
+                    // 万が一中身が全てお亡くなりになっていた場合の防衛
+                    if (ids.Count == 0) continue;
+
+                    Component primaryComp = matchedComponents[0];
+
+                    ComponentIconInfo groupIcon = new ComponentIconInfo
+                    {
+                        InstanceID = primaryComp.GetInstanceID(),
+                        MultiInstanceIDs = ids.ToArray(),
+                        Icon = def.GetTexture() ?? AssetPreview.GetMiniThumbnail(primaryComp),
+                        IsEnabled = isAnyEnabled,
+                        CanToggle = true,
+                        IsMissing = false
+                    };
+
+                    finalIcons.Add(groupIcon);
+
+                    foreach (var c in matchedComponents) processedComponents.Add(c);
+                }
+            }
+
+            // ---------------------------------------------------------
+            // 処理2: 残りのコンポーネントの通常処理（前回のままでOKですが念のため再掲）
+            // ---------------------------------------------------------
+            foreach (var c in rawComponents)
+            {
+                if (c is Transform || (c != null && processedComponents.Contains(c))) continue;
+
+                ComponentIconInfo info = new ComponentIconInfo();
+
+                // 完全に null、または Missing スクリプトの場合
+                if (c == null || !c)
+                {
+                    info.IsMissing = true;
+                    info.CanToggle = false;
+                }
+                else
+                {
+                    info.IsMissing = false;
+                    info.InstanceID = c.GetInstanceID();
+                    info.MultiInstanceIDs = new int[] { c.GetInstanceID() };
+                    info.Icon = AssetPreview.GetMiniThumbnail(c);
+
+                    switch (c)
+                    {
+                        case Renderer r: info.IsEnabled = r.enabled; info.CanToggle = true; break;
+                        case Behaviour b: info.IsEnabled = b.enabled; info.CanToggle = true; break;
+                        case Collider col: info.IsEnabled = col.enabled; info.CanToggle = true; break;
+                        default: info.IsEnabled = true; info.CanToggle = false; break;
+                    }
+                }
+
+                finalIcons.Add(info);
+            }
+
+            return finalIcons.ToArray();
+        }
+    }
 }
