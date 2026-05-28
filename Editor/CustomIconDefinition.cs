@@ -53,14 +53,21 @@ namespace Kohcha.AvatarHierarchyFormatter
                     TargetTypes = new List<Type> { typeof(BoxCollider), typeof(SphereCollider), typeof(CapsuleCollider), typeof(MeshCollider) },
                     IsCustomTexture = false
                 },
-
                 new CustomIconDefinition
                 {
                     GroupName = "PhysBone",
                     TargetTypes = new List<Type> { typeof(VRCPhysBone) },
                     IconGUID = "78013448b2cd2b949b5ba0e7118d7ab0",
                     IsCustomTexture = true
+                },
+                new CustomIconDefinition
+                {
+                    GroupName = "PhysBoneCollider",
+                    TargetTypes = new List<Type> { typeof(VRCPhysBoneCollider) },
+                    IconGUID = "cc70b3e0ffd1f414c84561a0dc2f0b50",
+                    IsCustomTexture = true
                 }
+                
             };
     }
 }
