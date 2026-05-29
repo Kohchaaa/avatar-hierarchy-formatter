@@ -91,7 +91,7 @@ namespace Kohcha.AvatarHierarchyFormatter
             else
             {
                 info.IsMissing = false;
-                info.InstanceID = c.GetInstanceID();
+                info.InstanceIDs = new int[] { c.GetInstanceID() };
 
                 info.Icon = AssetPreview.GetMiniThumbnail(c);
 
@@ -105,28 +105,6 @@ namespace Kohcha.AvatarHierarchyFormatter
             }
 
             return info;
-        }
-
-        /// <summary>
-        /// 特定のオブジェクトの特定のコンポーネントの有効フラグだけをキャッシュ上で書き換え、即座に再描画する
-        /// </summary>
-        public static void UpdateSingleComponentCache(int gameObjectInstanceID, int componentInstanceID, bool newEnabledState)
-        {
-            if (ItemCaches.TryGetValue(gameObjectInstanceID, out var cacheData))
-            {
-                for (int i = 0; i < cacheData.ComponentIcons.Length; i++)
-                {
-                    if (cacheData.ComponentIcons[i].InstanceID == componentInstanceID)
-                    {
-                        cacheData.ComponentIcons[i].IsEnabled = newEnabledState;
-                        break;
-                    }
-                }
-
-                ItemCaches[gameObjectInstanceID] = cacheData;
-
-                EditorApplication.RepaintHierarchyWindow();
-            }
         }
 
         /// <summary>
@@ -178,8 +156,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 
                     ComponentIconInfo groupIcon = new ComponentIconInfo
                     {
-                        InstanceID = primaryComp.GetInstanceID(),
-                        MultiInstanceIDs = ids.ToArray(),
+                        InstanceIDs = ids.ToArray(),
                         Icon = def.GetTexture() ?? AssetPreview.GetMiniThumbnail(primaryComp),
                         IsEnabled = isAnyEnabled,
                         CanToggle = true,
@@ -192,16 +169,14 @@ namespace Kohcha.AvatarHierarchyFormatter
                 }
             }
 
-            // ---------------------------------------------------------
-            // 処理2: 残りのコンポーネントの通常処理（前回のままでOKですが念のため再掲）
-            // ---------------------------------------------------------
+            //========================================================
+            // グルーピングされないコンポーネントの処理
             foreach (var c in rawComponents)
             {
                 if (c is Transform || (c != null && processedComponents.Contains(c))) continue;
 
                 ComponentIconInfo info = new ComponentIconInfo();
 
-                // 完全に null、または Missing スクリプトの場合
                 if (c == null || !c)
                 {
                     info.IsMissing = true;
@@ -210,17 +185,10 @@ namespace Kohcha.AvatarHierarchyFormatter
                 else
                 {
                     info.IsMissing = false;
-                    info.InstanceID = c.GetInstanceID();
-                    info.MultiInstanceIDs = new int[] { c.GetInstanceID() };
+                    info.InstanceIDs = new int[] { c.GetInstanceID() };
                     info.Icon = AssetPreview.GetMiniThumbnail(c);
-
-                    switch (c)
-                    {
-                        case Renderer r: info.IsEnabled = r.enabled; info.CanToggle = true; break;
-                        case Behaviour b: info.IsEnabled = b.enabled; info.CanToggle = true; break;
-                        case Collider col: info.IsEnabled = col.enabled; info.CanToggle = true; break;
-                        default: info.IsEnabled = true; info.CanToggle = false; break;
-                    }
+                    info.IsEnabled = GetEnabledState(c);
+                    info.CanToggle = CanToggleComponent(c);
                 }
 
                 finalIcons.Add(info);
@@ -244,6 +212,31 @@ namespace Kohcha.AvatarHierarchyFormatter
                 // ヒエラルキーの見た目を即座に更新
                 EditorApplication.RepaintHierarchyWindow();
             }
+        }
+
+        /// <summary>
+        /// コンポーネントが有効・無効（enabled）トグル可能かどうかを判定
+        /// </summary>
+        public static bool CanToggleComponent(Component comp)
+        {
+            if (comp == null) return false;
+            return comp is Behaviour || comp is Collider || comp is Renderer;
+        }
+
+        /// <summary>
+        /// コンポーネントの現在の有効・無効（enabled）状態を取得
+        /// </summary>
+        public static bool GetEnabledState(Component comp)
+        {
+            if (comp == null) return true;
+
+            return comp switch
+            {
+                Behaviour b => b.enabled,
+                Collider col => col.enabled,
+                Renderer r => r.enabled,
+                _ => true
+            };
         }
     }
 }

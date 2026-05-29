@@ -28,17 +28,15 @@ namespace Kohcha.AvatarHierarchyFormatter
             {
                 Rect iconRect = new Rect(currentX, selectionRect.y, iconSize, selectionRect.height);
 
-                if (icon.CanToggle) GUI.enabled = icon.IsEnabled;
-
                 string tooltipText = "";
 
                 if (icon.IsMissing)
                 {
                     tooltipText = "Missing Script";
                 }
-                else if (icon.MultiInstanceIDs != null && icon.MultiInstanceIDs.Length > 0)
+                else if (icon.InstanceIDs != null && icon.InstanceIDs.Length > 0)
                 {
-                    var componentNames = getComponentNames(icon.MultiInstanceIDs);
+                    var componentNames = getComponentNames(icon.InstanceIDs);
                     tooltipText = string.Join("\n", componentNames);
                 }
 
@@ -48,13 +46,17 @@ namespace Kohcha.AvatarHierarchyFormatter
                     tooltip = tooltipText
                 };
 
+
+                if (icon.CanToggle) GUI.enabled = icon.IsEnabled;
+
                 GUI.Box(iconRect, iconContent, GUIStyle.none);
 
                 GUI.enabled = true;
 
+
                 if (icon.CanToggle && CheckMouseDown(iconRect))
                 {
-                    ToggleComponentEnabled(icon.MultiInstanceIDs, instanceID);
+                    ToggleComponentEnabled(icon.InstanceIDs, instanceID);
                 }
 
                 currentX -= iconSize;
