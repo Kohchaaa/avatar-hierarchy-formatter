@@ -79,36 +79,8 @@ namespace Kohcha.AvatarHierarchyFormatter
             }
         }
 
-        private static ComponentIconInfo getComponentIconInfo(Component c)
-        {
-            ComponentIconInfo info = new ComponentIconInfo();
-
-            if (c == null)
-            {
-                info.IsMissing = true;
-                info.CanToggle = false;
-            }
-            else
-            {
-                info.IsMissing = false;
-                info.InstanceIDs = new int[] { c.GetInstanceID() };
-
-                info.Icon = AssetPreview.GetMiniThumbnail(c);
-
-                switch (c)
-                {
-                    case Renderer r: info.IsEnabled = r.enabled; info.CanToggle = true; break;
-                    case Behaviour b: info.IsEnabled = b.enabled; info.CanToggle = true; break;
-                    case Collider col: info.IsEnabled = col.enabled; info.CanToggle = true; break;
-                    default: info.IsEnabled = true; info.CanToggle = false; break;
-                }
-            }
-
-            return info;
-        }
-
         /// <summary>
-        /// GameObjectから取得した生のコンポーネント配列を、描画用のクリーンなアイコン情報リストに変換・集約する
+        /// コンポーネント配列を、描画用のアイコン情報リストに変換して集約
         /// </summary>
         public static ComponentIconInfo[] ConvertToIconInfos(Component[] rawComponents)
         {
@@ -128,7 +100,7 @@ namespace Kohcha.AvatarHierarchyFormatter
                 {
                     if (comp == null || !comp || processedComponents.Contains(comp) || comp is Transform) continue;
 
-                    if (def.GudgeIsInclude != null && def.GudgeIsInclude(comp))
+                    if (def.IsMatch(comp))
                     {
                         groupComponents.Add(comp);
                     }
@@ -137,6 +109,7 @@ namespace Kohcha.AvatarHierarchyFormatter
                 // マッチしたコンポーネント群を1つのグループアイコンに集約
                 if (groupComponents.Count > 0)
                 {
+                    // アイコンの有効状態の判定 && アイコンにどのコンポーネントが含まれてるかIDを収集
                     bool isAnyEnabled = false;
                     List<int> ids = new List<int>();
 
@@ -148,9 +121,6 @@ namespace Kohcha.AvatarHierarchyFormatter
                         else if (c is Collider col && col.enabled) isAnyEnabled = true;
                         else if (c is Renderer r && r.enabled) isAnyEnabled = true;
                     }
-
-                    // 万が一中身が全てお亡くなりになっていた場合の防衛
-                    if (ids.Count == 0) continue;
 
                     Component primaryComp = groupComponents[0];
 
@@ -196,6 +166,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 
             return finalIcons.ToArray();
         }
+
         /// <summary>
         /// 特定のオブジェクトのコンポーネント状態だけをその場で再解析して、キャッシュのアイコン情報のみを更新する
         /// </summary>
@@ -203,13 +174,10 @@ namespace Kohcha.AvatarHierarchyFormatter
         {
             if (ItemCaches.TryGetValue(gameObjectInstanceID, out var cacheData))
             {
-                // 前回作った変換関数をそのまま使い、最新のコンポーネント状態（enabled）を反映したアイコン配列を作る
                 cacheData.ComponentIcons = ConvertToIconInfos(rawComponents);
 
-                // 辞書に書き戻す
                 ItemCaches[gameObjectInstanceID] = cacheData;
 
-                // ヒエラルキーの見た目を即座に更新
                 EditorApplication.RepaintHierarchyWindow();
             }
         }
