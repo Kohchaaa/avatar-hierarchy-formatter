@@ -34,11 +34,11 @@ namespace Kohcha.AvatarHierarchyFormatter
 
                 List<bool> currentLineStates = new List<bool>();
 
-                BuildTreeCacheRecursive(rootXform, rootId, 0, false, currentLineStates);
+                BuildTreeCache(rootXform, rootId, 0, false, currentLineStates);
             }
         }
 
-        private static void BuildTreeCacheRecursive(Transform current, int rootId, int depth, bool isLastChild, List<bool> lineStates)
+        private static void BuildTreeCache(Transform current, int rootId, int depth, bool isLastChild, List<bool> lineStates)
         {
             int currentId = current.gameObject.GetInstanceID();
 
@@ -73,7 +73,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 
                 lineStates.Add(!childIsLast);
 
-                BuildTreeCacheRecursive(child, rootId, depth + 1, childIsLast, lineStates);
+                BuildTreeCache(child, rootId, depth + 1, childIsLast, lineStates);
 
                 lineStates.RemoveAt(lineStates.Count - 1);
             }
