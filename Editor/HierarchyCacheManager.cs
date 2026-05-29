@@ -269,5 +269,22 @@ namespace Kohcha.AvatarHierarchyFormatter
 
             return finalIcons.ToArray();
         }
+        /// <summary>
+        /// 特定のオブジェクトのコンポーネント状態だけをその場で再解析して、キャッシュのアイコン情報のみを更新する
+        /// </summary>
+        public static void UpdateSingleObjectCacheDirect(int gameObjectInstanceID, Component[] rawComponents)
+        {
+            if (ItemCaches.TryGetValue(gameObjectInstanceID, out var cacheData))
+            {
+                // 前回作った変換関数をそのまま使い、最新のコンポーネント状態（enabled）を反映したアイコン配列を作る
+                cacheData.ComponentIcons = ConvertToIconInfos(rawComponents);
+
+                // 辞書に書き戻す
+                ItemCaches[gameObjectInstanceID] = cacheData;
+
+                // ヒエラルキーの見た目を即座に更新
+                EditorApplication.RepaintHierarchyWindow();
+            }
+        }
     }
 }
