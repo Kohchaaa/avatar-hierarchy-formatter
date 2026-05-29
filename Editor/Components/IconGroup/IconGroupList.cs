@@ -9,7 +9,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 {
     public static partial class HierarchyCacheManager
     {
-        private static readonly List<IconGroup> IconGroup = new List<IconGroup>
+        private static readonly List<IconGroup> IconGroupList = new List<IconGroup>
         {
             // Unity
             new IconGroup

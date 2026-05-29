@@ -140,12 +140,11 @@ namespace Kohcha.AvatarHierarchyFormatter
             List<ComponentIconInfo> finalIcons = new List<ComponentIconInfo>();
             HashSet<Component> processedComponents = new HashSet<Component>();
 
-            // ---------------------------------------------------------
-            // 処理1: グループ化（まとめ）ルールの適用
-            // ---------------------------------------------------------
-            foreach (var def in IconGroup)
+            //========================================================
+            // グループごとにまとめる
+            foreach (var def in IconGroupList)
             {
-                List<Component> matchedComponents = new List<Component>();
+                List<Component> groupComponents = new List<Component>();
 
                 foreach (var comp in rawComponents)
                 {
@@ -153,21 +152,18 @@ namespace Kohcha.AvatarHierarchyFormatter
 
                     if (def.GudgeIsInclude != null && def.GudgeIsInclude(comp))
                     {
-                        matchedComponents.Add(comp);
+                        groupComponents.Add(comp);
                     }
                 }
 
                 // マッチしたコンポーネント群を1つのグループアイコンに集約
-                if (matchedComponents.Count > 0)
+                if (groupComponents.Count > 0)
                 {
                     bool isAnyEnabled = false;
                     List<int> ids = new List<int>();
 
-                    foreach (var c in matchedComponents)
+                    foreach (var c in groupComponents)
                     {
-                        // ここでも念のためオブジェクトの生存をチェック
-                        if (c == null || !c) continue;
-
                         ids.Add(c.GetInstanceID());
 
                         if (c is Behaviour b && b.enabled) isAnyEnabled = true;
@@ -178,7 +174,7 @@ namespace Kohcha.AvatarHierarchyFormatter
                     // 万が一中身が全てお亡くなりになっていた場合の防衛
                     if (ids.Count == 0) continue;
 
-                    Component primaryComp = matchedComponents[0];
+                    Component primaryComp = groupComponents[0];
 
                     ComponentIconInfo groupIcon = new ComponentIconInfo
                     {
@@ -192,7 +188,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 
                     finalIcons.Add(groupIcon);
 
-                    foreach (var c in matchedComponents) processedComponents.Add(c);
+                    foreach (var c in groupComponents) processedComponents.Add(c);
                 }
             }
 

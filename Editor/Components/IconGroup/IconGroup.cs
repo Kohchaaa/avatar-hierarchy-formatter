@@ -10,7 +10,6 @@ namespace Kohcha.AvatarHierarchyFormatter
     {
         public string GroupName;
         public List<Type> TargetTypes;
-        //public string ClassNamePrefix;
         public string IconPathOrName;
         public string IconGUID;
         public bool IsCustomTexture;

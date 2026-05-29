@@ -24,27 +24,27 @@ namespace Kohcha.AvatarHierarchyFormatter
             float iconSize = 16f;
             float currentX = selectionRect.xMax - iconSize;
 
-            foreach (var iconInfo in cacheData.ComponentIcons)
+            foreach (var icon in cacheData.ComponentIcons)
             {
                 Rect iconRect = new Rect(currentX, selectionRect.y, iconSize, selectionRect.height);
 
-                if (iconInfo.CanToggle) GUI.enabled = iconInfo.IsEnabled;
+                if (icon.CanToggle) GUI.enabled = icon.IsEnabled;
 
                 string tooltipText = "";
 
-                if (iconInfo.IsMissing)
+                if (icon.IsMissing)
                 {
                     tooltipText = "Missing Script";
                 }
-                else if (iconInfo.MultiInstanceIDs != null && iconInfo.MultiInstanceIDs.Length > 0)
+                else if (icon.MultiInstanceIDs != null && icon.MultiInstanceIDs.Length > 0)
                 {
-                    var componentNames = getComponentNames(iconInfo.MultiInstanceIDs);
+                    var componentNames = getComponentNames(icon.MultiInstanceIDs);
                     tooltipText = string.Join("\n", componentNames);
                 }
 
                 GUIContent iconContent = new GUIContent
                 {
-                    image = iconInfo.IsMissing ? EditorGUIUtility.IconContent("console.warnicon").image : iconInfo.Icon,
+                    image = icon.IsMissing ? EditorGUIUtility.IconContent("console.warnicon").image : icon.Icon,
                     tooltip = tooltipText
                 };
 
@@ -52,9 +52,9 @@ namespace Kohcha.AvatarHierarchyFormatter
 
                 GUI.enabled = true;
 
-                if (iconInfo.CanToggle && CheckMouseDown(iconRect))
+                if (icon.CanToggle && CheckMouseDown(iconRect))
                 {
-                    ToggleComponentEnabled(iconInfo.MultiInstanceIDs, instanceID);
+                    ToggleComponentEnabled(icon.MultiInstanceIDs, instanceID);
                 }
 
                 currentX -= iconSize;
