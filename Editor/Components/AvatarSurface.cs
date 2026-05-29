@@ -13,7 +13,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         private static void DrawAvatarSurface(int instanceID, Rect selectionRect)
         {
-            if (!HierarchyFormatterSettings.IsEnabled_AvatarHighlight) return;
+            if (!AvatarSurfaceSettingModule.IsEnabled_AvatarHighlight) return;
 
             if (!HierarchyCacheManager.ItemCaches.TryGetValue(instanceID, out var cacheData))
             {
@@ -39,12 +39,12 @@ namespace Kohcha.AvatarHierarchyFormatter
 
             if (cacheData.AvatarRootId == instanceID)
             {
-                EditorGUI.DrawRect(line, HierarchyFormatterSettings.LineColor);
-                EditorGUI.DrawRect(cardRect, HierarchyFormatterSettings.HeaderColor);
+                EditorGUI.DrawRect(line, AvatarSurfaceSettingModule.LineColor);
+                EditorGUI.DrawRect(cardRect, AvatarSurfaceSettingModule.HeaderColor);
             }
             else
             {
-                EditorGUI.DrawRect(cardRect, HierarchyFormatterSettings.ContentColor);
+                EditorGUI.DrawRect(cardRect, AvatarSurfaceSettingModule.ContentColor);
             }
         }
     }

@@ -13,14 +13,14 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         private static void DrawTreeLine(int instanceID, Rect selectionRect)
         {
-            if (!HierarchyFormatterSettings.IsEnabled_TreeView) return;
+            if (!TreeViewSettingModule.IsEnabled_TreeView) return;
 
             if (HierarchyCacheManager.ItemCaches == null || !HierarchyCacheManager.ItemCaches.TryGetValue(instanceID, out var cacheData))
             {
                 return;
             }
 
-            Color lineColor = HierarchyFormatterSettings.LineColor;
+            Color lineColor = AvatarSurfaceSettingModule.LineColor;
 
             float baseLeftX = 32f + 14f;
 

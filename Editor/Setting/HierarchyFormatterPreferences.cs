@@ -15,40 +15,16 @@ namespace Kohcha.AvatarHierarchyFormatter
                 {
                     EditorGUI.BeginChangeCheck();
 
-                    //===================================================
-                    // アバターハイライト設定
-                    HierarchyFormatterSettings.IsEnabled_AvatarHighlight = EditorGUILayout.Toggle("アバターハイライト", HierarchyFormatterSettings.IsEnabled_AvatarHighlight);
-
-                    using (new EditorGUI.DisabledScope(!HierarchyFormatterSettings.IsEnabled_AvatarHighlight))
+                    // setting moduleを並べる～～
+                    foreach (var module in AHFSettings.Modules)
                     {
-                        using (new EditorGUILayout.HorizontalScope())
-                        {
-                            HierarchyFormatterSettings.BaseColor = EditorGUILayout.ColorField(
-                                new GUIContent("ベースカラー", "アバター全体のテーマ色となるベースの色を選択します。"),
-                                HierarchyFormatterSettings.BaseColor,
-                                showEyedropper: true,
-                                showAlpha: false,
-                                hdr: false
-                            );
-
-                            GUIContent refreshIcon = EditorGUIUtility.IconContent("d_Refresh");
-                            refreshIcon.tooltip = "ベースカラーをデフォルトに戻す";
-
-                            if (GUILayout.Button(refreshIcon, GUILayout.Width(24), GUILayout.Height(18), GUILayout.ExpandWidth(false)))
-                            {
-                                HierarchyFormatterSettings.ResetToDefault();
-                            }
-                        }
+                        module.OnGUI();
+                        EditorGUILayout.Space();
                     }
-
-                    //===================================================
-                    // TreeView設定
-                    HierarchyFormatterSettings.IsEnabled_TreeView = EditorGUILayout.Toggle("ツリービューの線", HierarchyFormatterSettings.IsEnabled_TreeView);
-
 
                     if (EditorGUI.EndChangeCheck())
                     {
-                        HierarchyFormatterSettings.SaveSettings();
+                        AHFSettings.SaveAll();
                     }
                 }
             };
