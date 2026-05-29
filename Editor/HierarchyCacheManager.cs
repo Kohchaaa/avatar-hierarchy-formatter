@@ -43,11 +43,7 @@ namespace Kohcha.AvatarHierarchyFormatter
             int currentId = current.gameObject.GetInstanceID();
 
             // コンポーネント収集
-            var components = current.gameObject.GetComponents<Component>()
-                .Where(c => c is not Transform)
-                .Where(c => c is not Animator)
-                .Where(c => c is not PipelineManager)
-                .ToArray();
+            var components = AHFUtil.GetFilteredComponents(current.gameObject);
 
             ComponentIconInfo[] icons = ConvertToIconInfos(components);
 
