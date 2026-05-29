@@ -5,10 +5,12 @@ namespace Kohcha.AvatarHierarchyFormatter
 {
     public static class HierarchyFormatterSettings
     {
+        private const string prefix = "Kohcha.AvatarHierarchyFormatter.";
+
         //=========================================================
         // アバターハイライト
-        private const string KeyEnabled_AvatarHighlight = "Kohcha.AvatarHierarchyFormatter.Enabled_AvatarHighlight";
-        private const string KeyBaseColor = "Kohcha.AvatarHierarchyFormatter.BaseColor";
+        private const string KeyEnabled_AvatarHighlight = prefix + "Enabled_AvatarHighlight";
+        private const string KeyBaseColor = prefix + "BaseColor";
 
         private const string DefaultColorHEX = "8094AE";
 
@@ -21,12 +23,13 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         //=========================================================
         // TreeView
-        private const string KeyEnabled_TreeLine = "Kohcha.AvatarHierarchyFormatter.Enabled_TreeLine";
+        private const string KeyEnabled_TreeLine = prefix + "Enabled_TreeLine";
         
         public static bool IsEnabled_TreeView = true;
 
 
-
+        //=========================================================
+        // ComponentIcon
         
 
         [InitializeOnLoadMethod]
