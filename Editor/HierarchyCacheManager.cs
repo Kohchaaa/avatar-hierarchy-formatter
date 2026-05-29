@@ -143,7 +143,7 @@ namespace Kohcha.AvatarHierarchyFormatter
             // ---------------------------------------------------------
             // 処理1: グループ化（まとめ）ルールの適用
             // ---------------------------------------------------------
-            foreach (var def in IconDefinitions)
+            foreach (var def in IconGroup)
             {
                 List<Component> matchedComponents = new List<Component>();
 
@@ -151,44 +151,7 @@ namespace Kohcha.AvatarHierarchyFormatter
                 {
                     if (comp == null || !comp || processedComponents.Contains(comp) || comp is Transform) continue;
 
-                    Type compType = comp.GetType();
-                    if (compType == null) continue;
-
-                    string className = compType.Name;
-                    // フルネーム（例: nadena.dev.modular_avatar.runtime.MAMergeAnimator）を取得
-                    string fullTypeName = compType.FullName ?? "";
-
-                    bool isMatch = false;
-
-                    // A. MAの判定：クラス名かフルネーム（名前空間）にMA関連のキーワードが入っているか
-                    if (!string.IsNullOrEmpty(def.ClassNamePrefix) && def.GroupName == "ModularAvatar")
-                    {
-                        // 頭に「MA」が付くか、または名前空間に「nadena」か「ModularAvatar」が含まれていればMAの仲間とみなす！
-                        if (className.StartsWith(def.ClassNamePrefix, StringComparison.Ordinal) ||
-                            fullTypeName.Contains("nadena") ||
-                            fullTypeName.Contains("ModularAvatar"))
-                        {
-                            isMatch = true;
-                        }
-                    }
-                    // B. 通常の接頭辞（Prefix）判定
-                    else if (!string.IsNullOrEmpty(def.ClassNamePrefix))
-                    {
-                        if (className.StartsWith(def.ClassNamePrefix, StringComparison.Ordinal))
-                        {
-                            isMatch = true;
-                        }
-                    }
-                    // C. 従来の特定の型リスト判定（コライダー等）
-                    else if (def.TargetTypes != null)
-                    {
-                        if (def.TargetTypes.Exists(t => t != null && (t == compType || compType.IsSubclassOf(t))))
-                        {
-                            isMatch = true;
-                        }
-                    }
-
-                    if (isMatch)
+                    if (def.GudgeIsInclude != null && def.GudgeIsInclude(comp))
                     {
                         matchedComponents.Add(comp);
                     }
