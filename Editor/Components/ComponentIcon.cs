@@ -101,13 +101,12 @@ namespace Kohcha.AvatarHierarchyFormatter
         /// <summary>
         /// インスタンスIDからコンポーネントを特定し、有効・無効を反転させる
         /// </summary>
-        private static void ToggleComponentEnabled(int[] multiInstanceIDs, int gameObjectInstanceID)
+        private static void ToggleComponentEnabled(int[] instanceIDs, int gameObjectInstanceID)
         {
-            if (multiInstanceIDs == null || multiInstanceIDs.Length == 0) return;
+            if (instanceIDs == null || instanceIDs.Length == 0) return;
 
-            // 1. 内包されているすべてのコンポーネントの実体を逆引きしてリスト化
             List<Component> validComponents = new List<Component>();
-            foreach (int id in multiInstanceIDs)
+            foreach (int id in instanceIDs)
             {
                 Component comp = EditorUtility.InstanceIDToObject(id) as Component;
                 if (comp != null) validComponents.Add(comp);
@@ -144,9 +143,7 @@ namespace Kohcha.AvatarHierarchyFormatter
             if (go != null)
             {
                 Component[] filteredComponents = AHFUtil.GetFilteredComponents(go);
-
-                // フィルター済みの綺麗な配列をキャッシュマネージャーに渡す
-                HierarchyCacheManager.UpdateSingleObjectCacheDirect(gameObjectInstanceID, filteredComponents);
+                HierarchyCacheManager.UpdateGameObjectCache(gameObjectInstanceID, filteredComponents);
             }
         }
 
