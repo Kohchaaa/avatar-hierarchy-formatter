@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -38,27 +39,27 @@ namespace Kohcha.AvatarHierarchyFormatter
                 // マッチしたコンポーネント群を1つのグループアイコンに集約
                 if (groupComponents.Count > 0)
                 {
-                    // アイコンの有効状態の判定 && アイコンにどのコンポーネントが含まれてるかIDを収集
-                    bool isAnyEnabled = false;
-                    List<int> ids = new List<int>();
+                    // アイコンにどのコンポーネントが含まれてるかIDを収集
+                    int[] ids = groupComponents.Select(c => c.GetInstanceID()).ToArray();
 
-                    foreach (var c in groupComponents)
-                    {
-                        ids.Add(c.GetInstanceID());
-
-                        if (c is Behaviour b && b.enabled) isAnyEnabled = true;
-                        else if (c is Collider col && col.enabled) isAnyEnabled = true;
-                        else if (c is Renderer r && r.enabled) isAnyEnabled = true;
-                    }
+                    // アイコンの有効状態の判定
+                    bool isAnyEnabled = groupComponents.Any(c => GetEnabledState(c));
 
                     Component primaryComp = groupComponents[0];
 
+                    //トグル可否の決定
+                    Type firstType = primaryComp.GetType();
+                    bool isSameTypeAll = groupComponents.All(c => c.GetType() == firstType);
+
+                    // 全部同じ型で、そのコンポーネントがトグル可能だったらtrue
+                    bool canGroupToggle = isSameTypeAll && CanToggleComponent(primaryComp);
+
                     ComponentIconInfo groupIcon = new ComponentIconInfo
                     {
-                        InstanceIDs = ids.ToArray(),
+                        InstanceIDs = ids,
                         Icon = def.GetTexture() ?? AssetPreview.GetMiniThumbnail(primaryComp),
                         IsEnabled = isAnyEnabled,
-                        CanToggle = true,
+                        CanToggle = canGroupToggle,
                         IsMissing = false
                     };
 

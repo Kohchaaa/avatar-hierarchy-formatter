@@ -54,12 +54,15 @@ namespace Kohcha.AvatarHierarchyFormatter
                 GUI.enabled = true;
 
 
-                if (icon.CanToggle && CheckMouseDown(iconRect))
+                if (CheckMouseDown(iconRect))
                 {
-                    ToggleComponentEnabled(icon.InstanceIDs, instanceID);
+                    if (icon.CanToggle)
+                    {
+                        ToggleComponentEnabled(icon.InstanceIDs, instanceID);
+                    }
                 }
 
-                currentX -= iconSize;
+                currentX -= iconSize + 2f;
             }
         }
 
@@ -105,6 +108,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         {
             if (instanceIDs == null || instanceIDs.Length == 0) return;
 
+
             List<Component> validComponents = new List<Component>();
             foreach (int id in instanceIDs)
             {
@@ -114,54 +118,22 @@ namespace Kohcha.AvatarHierarchyFormatter
 
             if (validComponents.Count == 0) return;
 
-            // 2. 一括トグル対象かどうかの判定
-            Type firstType = validComponents[0].GetType();
-            bool isSameTypeAll = validComponents.All(c => c.GetType() == firstType);
 
-            // ★ 修正：型がバラバラ（MAなどの複合グループ）なら、クリックされても何もせず終了！
-            if (!isSameTypeAll)
-            {
-                return;
-            }
-
-            // 3. 実際の反転処理（全員が同じ型であることが確定しているので、一括で処理を回す）
-            List<Component> targetsToToggle = validComponents; // 全員が対象
-
-            bool currentStatus = GetEnabledState(targetsToToggle[0]);
+            bool currentStatus = HierarchyCacheManager.GetEnabledState(validComponents[0]);
             bool targetStatus = !currentStatus;
 
-            // まとめて元に戻せるように、対象全員をUndoに記録
-            Undo.RecordObjects(targetsToToggle.ToArray(), "Toggle Components State");
-
-            foreach (Component comp in targetsToToggle)
+            foreach (Component comp in validComponents)
             {
-                SetEnabledState(comp, targetStatus);
+                HierarchyCacheManager.SetEnabledState(comp, targetStatus);
             }
 
-            // 4. キャッシュ側へ通知して部分リビルド
+            // キャッシュに通知して一部だけ再描画
             GameObject go = EditorUtility.InstanceIDToObject(gameObjectInstanceID) as GameObject;
             if (go != null)
             {
                 Component[] filteredComponents = AHFUtil.GetFilteredComponents(go);
                 HierarchyCacheManager.UpdateGameObjectCache(gameObjectInstanceID, filteredComponents);
             }
-        }
-
-        // コンポーネントの有効状態を安全に取得するヘルパー関数
-        private static bool GetEnabledState(Component c)
-        {
-            if (c is Behaviour b) return b.enabled;
-            if (c is Collider col) return col.enabled;
-            if (c is Renderer r) return r.enabled;
-            return true;
-        }
-
-        // コンポーネントの有効状態を安全に設定するヘルパー関数
-        private static void SetEnabledState(Component c, bool state)
-        {
-            if (c is Behaviour b) b.enabled = state;
-            if (c is Collider col) col.enabled = state;
-            if (c is Renderer r) r.enabled = state;
         }
     }
 }
