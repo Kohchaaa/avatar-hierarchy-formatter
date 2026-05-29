@@ -2,7 +2,8 @@
     "name": "avatar-hierarchy-formatter.Editor",
     "rootNamespace": "",
     "references": [
-        "jp.kohchaaa.avatar-hierarchy-formatter"
+        "jp.kohchaaa.avatar-hierarchy-formatter",
+        "kohcha-ui.Editor"
     ],
     "includePlatforms": [
         "Editor"

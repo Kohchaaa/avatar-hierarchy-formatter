@@ -4,7 +4,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 {
     public class TreeViewSettingModule : IAHFSettingModule
     {
-        public string ModuleName => "ツリービュー";
+        public string ModuleName => "ツリービューの線";
 
         //=========================================================
         // キー
@@ -24,7 +24,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         public void OnGUI()
         {
-            IsEnabled_TreeView = EditorGUILayout.Toggle("ツリービューの線", IsEnabled_TreeView);
+            IsEnabled_TreeView = EditorGUILayout.Toggle("有効化", IsEnabled_TreeView);
         }
     }
 }

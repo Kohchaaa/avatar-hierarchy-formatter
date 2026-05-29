@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using UnityEditor;
+using Kohcha.UI;
 
 namespace Kohcha.AvatarHierarchyFormatter
 {
+    [InitializeOnLoad]
     public static class AHFSettings
     {
         public const string prefix = "Kohcha.AvatarHierarchyFormatter.";
@@ -12,6 +14,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         {
             Modules.Add(new AvatarSurfaceSettingModule());
             Modules.Add(new TreeViewSettingModule());
+            Modules.Add(new ComponentIconSettingModule());
         }
 
         [InitializeOnLoadMethod]

@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using Kohcha.UI;
 
 namespace Kohcha.AvatarHierarchyFormatter
 {
@@ -18,7 +19,11 @@ namespace Kohcha.AvatarHierarchyFormatter
                     // setting moduleを並べる～～
                     foreach (var module in AHFSettings.Modules)
                     {
-                        module.OnGUI();
+                        KohchaGUI.Section(
+                            module.ModuleName,
+                            () => module.OnGUI()
+                        );
+
                         EditorGUILayout.Space();
                     }
 

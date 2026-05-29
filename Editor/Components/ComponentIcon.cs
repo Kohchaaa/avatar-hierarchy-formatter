@@ -21,6 +21,11 @@ namespace Kohcha.AvatarHierarchyFormatter
                 return;
             }
 
+            if (!ComponentIconSettingModule.IsEnabled_ComopnentIcon)
+            {
+                return;
+            }
+
             float iconSize = 16f;
             float currentX = selectionRect.xMax - iconSize;
 
