@@ -37,6 +37,11 @@ namespace Kohcha.AvatarHierarchyFormatter
             return EditorPrefs.GetInt(AHFSettings.prefix + module.ModuleName + "_" + key, defaultValue);
         }
 
+        public static float LoadFloat(this IAHFSettingModule module, string key, float defaultValue = 0f)
+        {
+            return EditorPrefs.GetFloat(AHFSettings.prefix + module.ModuleName + "_" + key, defaultValue);
+        }
+
         public static string LoadString(this IAHFSettingModule module, string key, string defaultValue = "")
         {
 
@@ -67,6 +72,11 @@ namespace Kohcha.AvatarHierarchyFormatter
         public static void SaveInt(this IAHFSettingModule module, string key, int value)
         {
             EditorPrefs.SetInt(AHFSettings.prefix + module.ModuleName + "_" + key, value);
+        }
+
+        public static void SaveFloat(this IAHFSettingModule module, string key, float value)
+        {
+            EditorPrefs.SetFloat(AHFSettings.prefix + module.ModuleName + "_" + key, value);
         }
 
         public static void SaveString(this IAHFSettingModule module, string key, string value)
