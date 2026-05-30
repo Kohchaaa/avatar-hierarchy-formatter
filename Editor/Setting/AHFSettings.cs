@@ -14,7 +14,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         {
             Modules.Add(new GeneralSettingModule());
             Modules.Add(new AvatarHighlightSettingModule());
-            Modules.Add(new TreeViewSettingModule());
+            Modules.Add(new TreeLineSettingModule());
             Modules.Add(new ComponentIconSettingModule());
             
             LoadAll();

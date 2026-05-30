@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace Kohcha.AvatarHierarchyFormatter
 {
-    public class TreeViewSettingModule : IAHFSettingModule
+    public class TreeLineSettingModule : IAHFSettingModule
     {
-        public string LabelName => "ツリービューの線";
-        public string ModuleName => "TreeView";
+        public string LabelName => "ツリーの線";
+        public string ModuleName => "TreeLine";
 
         //=========================================================
         // キー

@@ -13,7 +13,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         private static void DrawTreeLine(int instanceID, Rect selectionRect)
         {
-            if (!TreeViewSettingModule.IsEnabled) return;
+            if (!TreeLineSettingModule.IsEnabled) return;
 
             if (HierarchyCacheManager.ItemCaches == null || !HierarchyCacheManager.ItemCaches.TryGetValue(instanceID, out var cacheData))
             {
@@ -21,13 +21,13 @@ namespace Kohcha.AvatarHierarchyFormatter
             }
 
             Color lineColor;
-            if (TreeViewSettingModule.IsUseThemeColor)
+            if (TreeLineSettingModule.IsUseThemeColor)
             {
                 lineColor = GeneralSettingModule.ThemeColor;
             }
             else
             {
-                lineColor = TreeViewSettingModule.OriginalColor;
+                lineColor = TreeLineSettingModule.OriginalColor;
             }
 
             float baseLeftX = 32f + 14f;
