@@ -30,6 +30,7 @@ namespace Kohcha.AvatarHierarchyFormatter
                     if (EditorGUI.EndChangeCheck())
                     {
                         AHFSettings.SaveAll();
+                        HierarchyCacheManager.CacheHierarchyObjectData();
                     }
                 }
             };

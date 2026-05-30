@@ -23,7 +23,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 
             if (GudgeIsInclude != null)
                 return GudgeIsInclude(comp);
-            
+
             if (TargetTypes != null)
             {
                 Type compType = comp.GetType();
@@ -52,6 +52,18 @@ namespace Kohcha.AvatarHierarchyFormatter
             }
 
             return _cachedTexture;
+        }
+
+
+        public Texture2D GetIconTexture(Component primaryComp)
+        {
+            if (ComponentIconSettingModule.IsAllowCustomIcon)
+            {
+                Texture2D customTex = GetTexture();
+                if (customTex != null) return customTex;
+            }
+
+            return AssetPreview.GetMiniThumbnail(primaryComp);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Kohcha.AvatarHierarchyFormatter
             }
 
             float iconSize = 16f;
-            float currentX = selectionRect.xMax - iconSize;
+            float currentX = selectionRect.xMax - iconSize - ComponentIconSettingModule.IconOffset;
 
             foreach (var icon in cacheData.ComponentIcons)
             {
@@ -57,11 +57,14 @@ namespace Kohcha.AvatarHierarchyFormatter
                 GUI.enabled = true;
 
 
-                if (CheckMouseDown(iconRect))
+                if (ComponentIconSettingModule.IsAllowToggleFromIcon)
                 {
-                    if (icon.CanToggle)
+                    if (CheckMouseDown(iconRect))
                     {
-                        ToggleComponentEnabled(icon.InstanceIDs, instanceID);
+                        if (icon.CanToggle)
+                        {
+                            ToggleComponentEnabled(icon.InstanceIDs, instanceID);
+                        }
                     }
                 }
 

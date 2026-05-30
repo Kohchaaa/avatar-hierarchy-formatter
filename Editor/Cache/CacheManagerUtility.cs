@@ -13,7 +13,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         {
             if (ItemCaches.TryGetValue(gameObjectInstanceID, out var cacheData))
             {
-                cacheData.ComponentIcons = ConvertToIconInfos(rawComponents);
+                cacheData.ComponentIcons = ConvertToIconInfo(rawComponents);
 
                 ItemCaches[gameObjectInstanceID] = cacheData;
 

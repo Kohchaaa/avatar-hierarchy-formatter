@@ -21,7 +21,7 @@ namespace Kohcha.AvatarHierarchyFormatter
             CacheHierarchyObjectData();
         }
 
-        private static void CacheHierarchyObjectData()
+        public static void CacheHierarchyObjectData()
         {
             ItemCaches.Clear();
 
@@ -45,7 +45,7 @@ namespace Kohcha.AvatarHierarchyFormatter
             // コンポーネント収集
             var components = AHFUtil.GetFilteredComponents(current.gameObject);
 
-            ComponentIconInfo[] icons = ConvertToIconInfos(components);
+            ComponentIconInfo[] icons = ConvertToIconInfo(components);
 
             int childCount = current.childCount;
             bool hasChildren = (childCount > 0);
