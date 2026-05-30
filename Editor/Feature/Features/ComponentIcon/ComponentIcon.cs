@@ -7,14 +7,17 @@ using UnityEngine;
 namespace Kohcha.AvatarHierarchyFormatter
 {
     [InitializeOnLoad]
-    public static class ComponentIcon
+    public class ComponentIcon : IAHFFeature
     {
-        static ComponentIcon()
+/*         static ComponentIcon()
         {
             EditorApplication.hierarchyWindowItemOnGUI += DrawComponentIcon;
-        }
+        } */
 
-        private static void DrawComponentIcon(int instanceID, Rect selectionRect)
+        public string FeatureName => "ComponentIcon";
+        public bool IsEnabled => ComponentIconSettingModule.IsEnabled;
+
+        public void OnGUI(int instanceID, Rect selectionRect)
         {
             if (HierarchyCacheManager.ItemCaches == null || !HierarchyCacheManager.ItemCaches.TryGetValue(instanceID, out var cacheData))
             {

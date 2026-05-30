@@ -4,14 +4,17 @@ using UnityEngine;
 namespace Kohcha.AvatarHierarchyFormatter
 {
     [InitializeOnLoad]
-    public static class TreeLine
+    public class TreeLine : IAHFFeature
     {
-        static TreeLine()
+/*         static TreeLine()
         {
             EditorApplication.hierarchyWindowItemOnGUI += DrawTreeLine;
-        }
+        } */
 
-        private static void DrawTreeLine(int instanceID, Rect selectionRect)
+        public string FeatureName => "TreeLine";
+        public bool IsEnabled => TreeLineSettingModule.IsEnabled;
+
+        public void OnGUI(int instanceID, Rect selectionRect)
         {
             if (!TreeLineSettingModule.IsEnabled) return;
 

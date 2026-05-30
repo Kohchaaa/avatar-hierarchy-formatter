@@ -4,14 +4,17 @@ using UnityEngine;
 namespace Kohcha.AvatarHierarchyFormatter
 {
     [InitializeOnLoad]
-    public static class AvatarHighlight
+    public class AvatarHighlight : IAHFFeature
     {
-        static AvatarHighlight()
-        {
-            EditorApplication.hierarchyWindowItemOnGUI += DrawAvatarSurface;
-        }
+        /*         static AvatarHighlight()
+                {
+                    EditorApplication.hierarchyWindowItemOnGUI += DrawAvatarSurface;
+                } */
 
-        private static void DrawAvatarSurface(int instanceID, Rect selectionRect)
+        public string FeatureName => "AvatarHighlight";
+        public bool IsEnabled => AvatarHighlightSettingModule.IsEnabled;
+
+        public void OnGUI(int instanceID, Rect selectionRect)
         {
             if (!AvatarHighlightSettingModule.IsEnabled) return;
 
@@ -50,7 +53,7 @@ namespace Kohcha.AvatarHierarchyFormatter
             if (cacheData.AvatarRootId == instanceID)
             {
                 EditorGUI.DrawRect(line, AvatarHighlightSettingModule.GetLineColor(color));
-                EditorGUI.DrawRect(cardRect,AvatarHighlightSettingModule.GetHeaderColor(color));
+                EditorGUI.DrawRect(cardRect, AvatarHighlightSettingModule.GetHeaderColor(color));
             }
             else
             {
