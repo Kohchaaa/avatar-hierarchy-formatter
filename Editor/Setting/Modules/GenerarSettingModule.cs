@@ -5,7 +5,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 {
     public class GeneralSettingModule : IAHFSettingModule
     {
-        public string ModuleName => "全般設定";
+        public string LabelName => "全般設定";
 
         //=========================================================
         // 設定項目

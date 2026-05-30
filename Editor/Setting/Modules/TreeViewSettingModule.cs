@@ -5,7 +5,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 {
     public class TreeViewSettingModule : IAHFSettingModule
     {
-        public string ModuleName => "ツリービューの線";
+        public string LabelName => "ツリービューの線";
 
         //=========================================================
         // キー

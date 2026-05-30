@@ -5,7 +5,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 {
     public class AvatarSurfaceSettingModule : IAHFSettingModule
     {
-        public string ModuleName => "アバターハイライト設定";
+        public string LabelName => "アバターハイライト設定";
 
 
         //=========================================================

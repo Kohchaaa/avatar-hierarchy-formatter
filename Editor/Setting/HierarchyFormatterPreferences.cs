@@ -20,7 +20,7 @@ namespace Kohcha.AvatarHierarchyFormatter
                     foreach (var module in AHFSettings.Modules)
                     {
                         KohchaGUI.Section(
-                            module.ModuleName,
+                            module.LabelName,
                             () => module.OnGUI()
                         );
 

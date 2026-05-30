@@ -4,7 +4,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 {
     public class ComponentIconSettingModule : IAHFSettingModule
     {
-        public string ModuleName => "コンポーネントアイコン";
+        public string LabelName => "コンポーネントアイコン";
 
         //=========================================================
         // キー
