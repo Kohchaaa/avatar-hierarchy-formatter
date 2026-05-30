@@ -6,19 +6,20 @@ namespace Kohcha.AvatarHierarchyFormatter
     public class TreeViewSettingModule : IAHFSettingModule
     {
         public string LabelName => "ツリービューの線";
+        public string ModuleName => "TreeView";
 
         //=========================================================
         // キー
         // 有効化
-        private const string KeyEnabled_TreeLine = AHFSettings.prefix + "Enabled_TreeLine";
-        public static bool IsEnabled_TreeView = true;
+        private const string Key_Enabled = "Enabled";
+        public static bool IsEnabled = true;
 
         // テーマカラー使うか
-        private const string Key_UseThemeColor = AHFSettings.prefix + "UseThemeColor";
+        private const string Key_UseThemeColor = "UseThemeColor";
         public static bool IsUseThemeColor = true;
 
         // オリジナルカラー
-        private const string Key_OriginalColor = AHFSettings.prefix + "OriginalColor";
+        private const string Key_OriginalColor = "OriginalColor";
         public static Color OriginalColor = new Color32(126, 126, 126, 255);
         private const string DefaultColorHEX = "7E7E7E";
 
@@ -49,7 +50,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         public void OnGUI()
         {
             // 有効化
-            IsEnabled_TreeView = EditorGUILayout.Toggle("有効化", IsEnabled_TreeView);
+            IsEnabled = EditorGUILayout.Toggle("有効化", IsEnabled);
 
             // テーマカラー使うか
             IsUseThemeColor = EditorGUILayout.Toggle("テーマカラーを使う", IsUseThemeColor);

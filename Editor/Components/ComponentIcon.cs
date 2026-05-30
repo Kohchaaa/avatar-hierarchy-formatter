@@ -21,7 +21,7 @@ namespace Kohcha.AvatarHierarchyFormatter
                 return;
             }
 
-            if (!ComponentIconSettingModule.IsEnabled_ComopnentIcon)
+            if (!ComponentIconSettingModule.IsEnabled)
             {
                 return;
             }

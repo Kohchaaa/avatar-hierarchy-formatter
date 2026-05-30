@@ -5,11 +5,12 @@ namespace Kohcha.AvatarHierarchyFormatter
     public class ComponentIconSettingModule : IAHFSettingModule
     {
         public string LabelName => "コンポーネントアイコン";
+        public string ModuleName => "ComopnentIcon";
 
         //=========================================================
         // キー
-        private const string KeyEnabled_ComponentIcon = AHFSettings.prefix + "Enabled_ComponentIcon";
-        public static bool IsEnabled_ComopnentIcon = true;
+        private const string Key_Enabled = "Enabled";
+        public static bool IsEnabled = true;
 
         public void Load()
         {
@@ -23,7 +24,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         
         public void OnGUI()
         {
-            IsEnabled_ComopnentIcon = EditorGUILayout.Toggle("有効化", IsEnabled_ComopnentIcon);
+            IsEnabled = EditorGUILayout.Toggle("有効化", IsEnabled);
         }
     }
 }

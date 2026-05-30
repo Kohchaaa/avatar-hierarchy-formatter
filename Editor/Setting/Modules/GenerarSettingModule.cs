@@ -6,15 +6,16 @@ namespace Kohcha.AvatarHierarchyFormatter
     public class GeneralSettingModule : IAHFSettingModule
     {
         public string LabelName => "全般設定";
+        public string ModuleName => "General";
 
         //=========================================================
         // 設定項目
         // 機能有効化
-        private const string Key_EnabledFeatures = AHFSettings.prefix + "Enabled_Features";
+        private const string Key_EnabledPlugin = "Enabled_Plugin";
         public static bool IsEnabled_Plugin = true;
 
         // テーマカラー
-        private const string Key_ThemeColor = AHFSettings.prefix + "ThemeColor";
+        private const string Key_ThemeColor = "ThemeColor";
         public static Color ThemeColor = new Color32(128, 148, 174, 100);
         private const string DefaultColorHEX = "8094AE";
 
