@@ -9,18 +9,22 @@ namespace Kohcha.AvatarHierarchyFormatter
 
 
         //=========================================================
-        // キーなど
+        // 設定項目
+        // 有効化
         private const string KeyEnabled_AvatarHighlight = AHFSettings.prefix + "Enabled_AvatarHighlight";
-        private const string KeyBaseColor = AHFSettings.prefix + "BaseColor";
-
-        private const string DefaultColorHEX = "8094AE";
-
         public static bool IsEnabled_AvatarHighlight = true;
+
+        // カラー
+        private const string KeyBaseColor = AHFSettings.prefix + "BaseColor";
         public static Color BaseColor = new Color32(128, 148, 174, 100);
 
+        
+        // 計算値
         public static Color HeaderColor { get; private set; }
         public static Color ContentColor { get; private set; }
         public static Color LineColor { get; private set; }
+
+        private const string DefaultColorHEX = "8094AE";
 
         public void Load()
         {
