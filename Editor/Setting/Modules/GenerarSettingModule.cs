@@ -11,7 +11,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         // 設定項目
         // 機能有効化
         private const string Key_EnabledFeatures = AHFSettings.prefix + "Enabled_Features";
-        public static bool IsEnabled_Features = true;
+        public static bool IsEnabled_Plugin = true;
 
         // テーマカラー
         private const string Key_ThemeColor = AHFSettings.prefix + "ThemeColor";
@@ -21,7 +21,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         public void Load()
         {
             // 機能有効化
-            IsEnabled_Features = EditorPrefs.GetBool(Key_EnabledFeatures, true);
+            IsEnabled_Plugin = EditorPrefs.GetBool(Key_EnabledFeatures, true);
 
             // テーマカラー
             if (ColorUtility.TryParseHtmlString("#" + EditorPrefs.GetString(Key_ThemeColor, DefaultColorHEX), out Color loadedColor))
@@ -33,7 +33,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         public void Save()
         {
             // 機能有効化
-            EditorPrefs.SetBool(Key_EnabledFeatures, IsEnabled_Features);
+            EditorPrefs.SetBool(Key_EnabledFeatures, IsEnabled_Plugin);
 
             // テーマカラー
             EditorPrefs.GetString(Key_ThemeColor, ColorUtility.ToHtmlStringRGB(ThemeColor));
@@ -41,7 +41,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         public void OnGUI()
         {
-            IsEnabled_Features = EditorGUILayout.Toggle("機能の有効化", IsEnabled_Features);
+            IsEnabled_Plugin = EditorGUILayout.Toggle("機能の有効化", IsEnabled_Plugin);
 
             using (new EditorGUILayout.HorizontalScope())
             {
