@@ -6,11 +6,6 @@ namespace Kohcha.AvatarHierarchyFormatter
     [InitializeOnLoad]
     public class AvatarHighlight : IAHFFeature
     {
-        /*         static AvatarHighlight()
-                {
-                    EditorApplication.hierarchyWindowItemOnGUI += DrawAvatarSurface;
-                } */
-
         public string FeatureName => "AvatarHighlight";
         public bool IsEnabled => AvatarHighlightSettingModule.IsEnabled;
 

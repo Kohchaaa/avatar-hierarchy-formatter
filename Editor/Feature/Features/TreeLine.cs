@@ -6,11 +6,6 @@ namespace Kohcha.AvatarHierarchyFormatter
     [InitializeOnLoad]
     public class TreeLine : IAHFFeature
     {
-/*         static TreeLine()
-        {
-            EditorApplication.hierarchyWindowItemOnGUI += DrawTreeLine;
-        } */
-
         public string FeatureName => "TreeLine";
         public bool IsEnabled => TreeLineSettingModule.IsEnabled;
 

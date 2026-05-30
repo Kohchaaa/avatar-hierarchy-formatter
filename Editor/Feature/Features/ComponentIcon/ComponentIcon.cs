@@ -9,11 +9,6 @@ namespace Kohcha.AvatarHierarchyFormatter
     [InitializeOnLoad]
     public class ComponentIcon : IAHFFeature
     {
-/*         static ComponentIcon()
-        {
-            EditorApplication.hierarchyWindowItemOnGUI += DrawComponentIcon;
-        } */
-
         public string FeatureName => "ComponentIcon";
         public bool IsEnabled => ComponentIconSettingModule.IsEnabled;
 
