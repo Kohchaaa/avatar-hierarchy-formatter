@@ -5,7 +5,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 {
     [InitializeOnLoad]
     public static class AvatarSurface
-    {   
+    {
         static AvatarSurface()
         {
             EditorApplication.hierarchyWindowItemOnGUI += DrawAvatarSurface;
@@ -13,11 +13,21 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         private static void DrawAvatarSurface(int instanceID, Rect selectionRect)
         {
-            if (!AvatarSurfaceSettingModule.IsEnabled_AvatarHighlight) return;
+            if (!AvatarSurfaceSettingModule.IsEnabled) return;
 
             if (!HierarchyCacheManager.ItemCaches.TryGetValue(instanceID, out var cacheData))
             {
                 return;
+            }
+
+            Color color;
+            if (AvatarSurfaceSettingModule.IsUseThemeColor)
+            {
+                color = GeneralSettingModule.ThemeColor;
+            }
+            else
+            {
+                color = AvatarSurfaceSettingModule.OriginalColor;
             }
 
             float fixedX = 32f;
@@ -39,12 +49,12 @@ namespace Kohcha.AvatarHierarchyFormatter
 
             if (cacheData.AvatarRootId == instanceID)
             {
-                EditorGUI.DrawRect(line, AvatarSurfaceSettingModule.LineColor);
-                EditorGUI.DrawRect(cardRect, AvatarSurfaceSettingModule.HeaderColor);
+                EditorGUI.DrawRect(line, AvatarSurfaceSettingModule.GetLineColor(color));
+                EditorGUI.DrawRect(cardRect,AvatarSurfaceSettingModule.GetHeaderColor(color));
             }
             else
             {
-                EditorGUI.DrawRect(cardRect, AvatarSurfaceSettingModule.ContentColor);
+                EditorGUI.DrawRect(cardRect, AvatarSurfaceSettingModule.GetContentColor(color));
             }
         }
     }

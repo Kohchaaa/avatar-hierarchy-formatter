@@ -6,25 +6,28 @@ namespace Kohcha.AvatarHierarchyFormatter
     public class AvatarSurfaceSettingModule : IAHFSettingModule
     {
         public string LabelName => "アバターハイライト設定";
-
+        public string ModuleName => "AvatarHighlight";
 
         //=========================================================
         // 設定項目
         // 有効化
-        private const string KeyEnabled_AvatarHighlight = AHFSettings.prefix + "Enabled_AvatarHighlight";
-        public static bool IsEnabled_AvatarHighlight = true;
+        private const string Key_Enabled = "Enabled";
+        public static bool IsEnabled = true;
 
-        // カラー
-        private const string KeyBaseColor = AHFSettings.prefix + "BaseColor";
-        public static Color BaseColor = new Color32(128, 148, 174, 100);
+        // テーマカラー使うか
+        private const string Key_UseThemeColor = "UseThemeColor";
+        public static bool IsUseThemeColor = true;
 
-        
+        // オリジナルカラー
+        private const string Key_OriginalColor = "OriginalColor";
+        public static Color OriginalColor { get; private set; } = new Color32(128, 148, 174, 100);
+
         // 計算値
         public static Color HeaderColor { get; private set; }
         public static Color ContentColor { get; private set; }
         public static Color LineColor { get; private set; }
 
-        private const string DefaultColorHEX = "8094AE";
+
 
         public void Load()
         {
@@ -41,36 +44,39 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         public void Save()
         {
-            EditorPrefs.SetBool(KeyEnabled_AvatarHighlight, IsEnabled_AvatarHighlight);
-            EditorPrefs.SetString(KeyBaseColor, ColorUtility.ToHtmlStringRGB(BaseColor));
+            // 有効化
+            this.SaveBool(Key_Enabled, IsEnabled);
 
+            // テーマカラー使うか
+            this.SaveBool(Key_UseThemeColor, IsUseThemeColor);
+
+            // オリジナルカラー
+            this.SaveColor(Key_OriginalColor, OriginalColor);
             UpdateCalculatedColors();
         }
 
         public void OnGUI()
         {
-            IsEnabled_AvatarHighlight = EditorGUILayout.Toggle("有効化", IsEnabled_AvatarHighlight);
+            // 有効化
+            IsEnabled = EditorGUILayout.Toggle("有効化", IsEnabled);
 
-            using (new EditorGUI.DisabledScope(!IsEnabled_AvatarHighlight))
+            // テーマカラー使うか
+            IsUseThemeColor = EditorGUILayout.Toggle("テーマカラーを使う", IsUseThemeColor);
+
+            // オリジナルカラー
+            if (!IsUseThemeColor)
             {
-                using (new EditorGUILayout.HorizontalScope())
-                {
-                    BaseColor = EditorGUILayout.ColorField(
-                        new GUIContent("ベースカラー", "アバター全体のテーマ色となるベースの色を選択します。"),
-                        BaseColor,
-                        showEyedropper: true,
-                        showAlpha: false,
-                        hdr: false
-                    );
-
-                    GUIContent refreshIcon = EditorGUIUtility.IconContent("d_Refresh");
-                    refreshIcon.tooltip = "ベースカラーをデフォルトに戻す";
-
-                    if (GUILayout.Button(refreshIcon, GUILayout.Width(24), GUILayout.Height(18), GUILayout.ExpandWidth(false)))
-                    {
-                        ResetToDefault();
-                    }
-                }
+                OriginalColor = EditorGUILayout.ColorField(
+                    new GUIContent("アバターハイライトのカラー", "アバターを目立たせる色を設定します。"),
+                    OriginalColor,
+                    showEyedropper: true,
+                    showAlpha: false,
+                    hdr: false
+                );
+            }
+            else
+            {
+                EditorGUILayout.HelpBox("現在、全般設定のテーマカラーが適用されています。", MessageType.None);
             }
         }
 
@@ -78,19 +84,32 @@ namespace Kohcha.AvatarHierarchyFormatter
         // オリジナル関数
         private static void UpdateCalculatedColors()
         {
-            HeaderColor = new Color(BaseColor.r, BaseColor.g, BaseColor.b, 0.17f);
-
-            ContentColor = new Color(BaseColor.r, BaseColor.g, BaseColor.b, 0.05f);
-
-            LineColor = new Color(BaseColor.r, BaseColor.g, BaseColor.b, 1f);
+            HeaderColor = new Color(OriginalColor.r, OriginalColor.g, OriginalColor.b, 0.17f);
+            ContentColor = new Color(OriginalColor.r, OriginalColor.g, OriginalColor.b, 0.05f);
+            LineColor = new Color(OriginalColor.r, OriginalColor.g, OriginalColor.b, 1f);
         }
 
         public static void ResetToDefault()
         {
-            if (ColorUtility.TryParseHtmlString("#" + DefaultColorHEX, out Color defaultColor))
+            if (ColorUtility.TryParseHtmlString("#" + ColorUtility.ToHtmlStringRGB(new Color32(128, 148, 174, 100)), out Color defaultColor))
             {
-                BaseColor = defaultColor;
+                OriginalColor = defaultColor;
             }
+        }
+
+        public static Color GetHeaderColor(Color c)
+        {
+            return new Color(c.r, c.g, c.b, 0.17f);
+        }
+
+        public static Color GetContentColor(Color c)
+        {
+            return new Color(c.r, c.g, c.b, 0.05f);
+        }
+
+        public static Color GetLineColor(Color c)
+        {
+            return new Color(c.r, c.g, c.b, 1f);
         }
     }
 }
