@@ -49,7 +49,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         public void OnGUI()
         {
-            IsEnabled_AvatarHighlight = EditorGUILayout.Toggle("アバターハイライト", IsEnabled_AvatarHighlight);
+            IsEnabled_AvatarHighlight = EditorGUILayout.Toggle("有効化", IsEnabled_AvatarHighlight);
 
             using (new EditorGUI.DisabledScope(!IsEnabled_AvatarHighlight))
             {

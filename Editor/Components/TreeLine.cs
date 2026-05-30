@@ -20,7 +20,15 @@ namespace Kohcha.AvatarHierarchyFormatter
                 return;
             }
 
-            Color lineColor = AvatarSurfaceSettingModule.LineColor;
+            Color lineColor;
+            if (TreeViewSettingModule.IsUseThemeColor)
+            {
+                lineColor = GeneralSettingModule.ThemeColor;
+            }
+            else
+            {
+                lineColor = TreeViewSettingModule.OriginalColor;
+            }
 
             float baseLeftX = 32f + 14f;
 
