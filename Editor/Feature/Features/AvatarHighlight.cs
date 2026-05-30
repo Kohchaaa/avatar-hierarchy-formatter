@@ -4,16 +4,16 @@ using UnityEngine;
 namespace Kohcha.AvatarHierarchyFormatter
 {
     [InitializeOnLoad]
-    public static class AvatarSurface
+    public static class AvatarHighlight
     {
-        static AvatarSurface()
+        static AvatarHighlight()
         {
             EditorApplication.hierarchyWindowItemOnGUI += DrawAvatarSurface;
         }
 
         private static void DrawAvatarSurface(int instanceID, Rect selectionRect)
         {
-            if (!AvatarSurfaceSettingModule.IsEnabled) return;
+            if (!AvatarHighlightSettingModule.IsEnabled) return;
 
             if (!HierarchyCacheManager.ItemCaches.TryGetValue(instanceID, out var cacheData))
             {
@@ -21,13 +21,13 @@ namespace Kohcha.AvatarHierarchyFormatter
             }
 
             Color color;
-            if (AvatarSurfaceSettingModule.IsUseThemeColor)
+            if (AvatarHighlightSettingModule.IsUseThemeColor)
             {
                 color = GeneralSettingModule.ThemeColor;
             }
             else
             {
-                color = AvatarSurfaceSettingModule.OriginalColor;
+                color = AvatarHighlightSettingModule.OriginalColor;
             }
 
             float fixedX = 32f;
@@ -49,12 +49,12 @@ namespace Kohcha.AvatarHierarchyFormatter
 
             if (cacheData.AvatarRootId == instanceID)
             {
-                EditorGUI.DrawRect(line, AvatarSurfaceSettingModule.GetLineColor(color));
-                EditorGUI.DrawRect(cardRect,AvatarSurfaceSettingModule.GetHeaderColor(color));
+                EditorGUI.DrawRect(line, AvatarHighlightSettingModule.GetLineColor(color));
+                EditorGUI.DrawRect(cardRect,AvatarHighlightSettingModule.GetHeaderColor(color));
             }
             else
             {
-                EditorGUI.DrawRect(cardRect, AvatarSurfaceSettingModule.GetContentColor(color));
+                EditorGUI.DrawRect(cardRect, AvatarHighlightSettingModule.GetContentColor(color));
             }
         }
     }

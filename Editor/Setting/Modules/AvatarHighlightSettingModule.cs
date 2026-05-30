@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Kohcha.AvatarHierarchyFormatter
 {
-    public class AvatarSurfaceSettingModule : IAHFSettingModule
+    public class AvatarHighlightSettingModule : IAHFSettingModule
     {
         public string LabelName => "アバターハイライト設定";
         public string ModuleName => "AvatarHighlight";

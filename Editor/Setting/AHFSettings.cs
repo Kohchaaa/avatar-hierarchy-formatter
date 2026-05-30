@@ -13,7 +13,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         static AHFSettings()
         {
             Modules.Add(new GeneralSettingModule());
-            Modules.Add(new AvatarSurfaceSettingModule());
+            Modules.Add(new AvatarHighlightSettingModule());
             Modules.Add(new TreeViewSettingModule());
             Modules.Add(new ComponentIconSettingModule());
             
