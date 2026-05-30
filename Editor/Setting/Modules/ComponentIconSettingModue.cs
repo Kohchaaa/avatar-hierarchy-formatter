@@ -13,12 +13,14 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         public void Load()
         {
-            IsEnabled_ComopnentIcon = EditorPrefs.GetBool(KeyEnabled_ComponentIcon, true);
+            this.LoadBool(Key_Enabled, true);
         }
+
         public void Save()
         {
-            EditorPrefs.SetBool(KeyEnabled_ComponentIcon, IsEnabled_ComopnentIcon);
+            this.SaveBool(Key_Enabled, IsEnabled);
         }
+        
         public void OnGUI()
         {
             IsEnabled_ComopnentIcon = EditorGUILayout.Toggle("有効化", IsEnabled_ComopnentIcon);

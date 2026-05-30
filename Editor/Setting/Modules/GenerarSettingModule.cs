@@ -21,22 +21,19 @@ namespace Kohcha.AvatarHierarchyFormatter
         public void Load()
         {
             // 機能有効化
-            IsEnabled_Plugin = EditorPrefs.GetBool(Key_EnabledFeatures, true);
+            IsEnabled_Plugin = this.LoadBool(Key_EnabledPlugin, true);
 
             // テーマカラー
-            if (ColorUtility.TryParseHtmlString("#" + EditorPrefs.GetString(Key_ThemeColor, DefaultColorHEX), out Color loadedColor))
-            {
-                ThemeColor = loadedColor;
-            }
+            ThemeColor = this.LoadColor(Key_ThemeColor, new Color32(128, 148, 174, 100));
         }
 
         public void Save()
         {
             // 機能有効化
-            EditorPrefs.SetBool(Key_EnabledFeatures, IsEnabled_Plugin);
+            this.SaveBool(Key_EnabledPlugin, IsEnabled_Plugin);
 
             // テーマカラー
-            EditorPrefs.GetString(Key_ThemeColor, ColorUtility.ToHtmlStringRGB(ThemeColor));
+            this.SaveColor(Key_ThemeColor, ThemeColor);
         }
 
         public void OnGUI()

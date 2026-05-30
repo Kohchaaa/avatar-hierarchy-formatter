@@ -25,29 +25,25 @@ namespace Kohcha.AvatarHierarchyFormatter
         public void Load()
         {
             // 有効化
-            IsEnabled_TreeView = EditorPrefs.GetBool(KeyEnabled_TreeLine, true);
+            IsEnabled = this.LoadBool(Key_Enabled, true);
 
             // テーマカラー使うか
-            IsUseThemeColor = EditorPrefs.GetBool(Key_UseThemeColor, true);
+            IsUseThemeColor = this.LoadBool(Key_UseThemeColor, true);
 
             // オリジナルカラー
-            if (ColorUtility.TryParseHtmlString("#" + EditorPrefs.GetString(Key_OriginalColor, DefaultColorHEX), out Color loadedColor))
-            {
-                OriginalColor = loadedColor;
-            }
+            OriginalColor = this.LoadColor(Key_OriginalColor, new Color32(126, 126, 126, 255));
         }
 
         public void Save()
         {
             // 有効化
-            EditorPrefs.SetBool(KeyEnabled_TreeLine, IsEnabled_TreeView);
+            this.SaveBool(Key_Enabled, IsEnabled);
 
             // テーマカラー使うか
-            EditorPrefs.SetBool(Key_UseThemeColor, IsUseThemeColor);
+            this.SaveBool(Key_Enabled, IsUseThemeColor);
 
             // オリジナルカラー
-            EditorPrefs.GetString(Key_OriginalColor, ColorUtility.ToHtmlStringRGB(OriginalColor));
-
+            this.SaveColor(Key_OriginalColor, OriginalColor);
         }
 
         public void OnGUI()

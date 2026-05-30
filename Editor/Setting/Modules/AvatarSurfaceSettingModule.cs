@@ -28,14 +28,14 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         public void Load()
         {
-            IsEnabled_AvatarHighlight = EditorPrefs.GetBool(KeyEnabled_AvatarHighlight, true);
+            // 有効化
+            IsEnabled = this.LoadBool(Key_Enabled);
 
-            string colorHex = EditorPrefs.GetString(KeyBaseColor, DefaultColorHEX);
-            if (ColorUtility.TryParseHtmlString("#" + colorHex, out Color loadedColor))
-            {
-                BaseColor = loadedColor;
-            }
+            // テーマカラー使うか
+            IsUseThemeColor = this.LoadBool(Key_UseThemeColor);
 
+            // オリジナルカラー
+            OriginalColor = this.LoadColor(Key_OriginalColor, new Color32(128, 148, 174, 100));
             UpdateCalculatedColors();
         }
 
