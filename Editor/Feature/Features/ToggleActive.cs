@@ -12,6 +12,9 @@ namespace Kohcha.AvatarHierarchyFormatter
         public string FeatureName => "ToggleActive";
         public bool IsEnabled => ToggleActiveSettingModule.IsEnabled;
 
+        private static bool _isDraggingActiveToggle = false;
+        private static bool _targetActiveState = false;
+
         public void OnGUI(ref AHFLayoutContext c)
         {
             if (!ToggleActiveSettingModule.IsEnabled) return;
@@ -25,36 +28,62 @@ namespace Kohcha.AvatarHierarchyFormatter
             if (obj == null) return;
 
             c.RightOffset.CurrentOffset += ToggleActiveSettingModule.ButtonOffset;
-
             Rect toggleRect = c.RightOffset.GetOffsetRect(c.SelectionRect, 16, 4);
-
             toggleRect.y += (toggleRect.height - 16f) / 2f;
             toggleRect.height = 16f;
 
+            Event evt = Event.current;
+            bool isMouseOver = toggleRect.Contains(evt.mousePosition);
+
             bool currentActive = obj.activeSelf;
 
-            EditorGUI.BeginChangeCheck();
-            bool newActive = EditorGUI.Toggle(toggleRect, currentActive);
-
-            if (EditorGUI.EndChangeCheck())
+            if (evt.rawType == EventType.MouseDown && evt.button == 0 && isMouseOver)
             {
-                GameObject[] targets = Selection.gameObjects.Contains(obj)
-                    ? Selection.gameObjects
-                    : new GameObject[] { obj };
+                _isDraggingActiveToggle = true;
+                _targetActiveState = !currentActive;
 
-                Undo.RecordObjects(targets, "Toggle GameObject Active (AHF)");
-
-                foreach (var target in targets)
+                ApplyActiveState(obj, _targetActiveState);
+                evt.Use();
+            }
+            else if (_isDraggingActiveToggle && isMouseOver)
+            {
+                if (currentActive != _targetActiveState)
                 {
-                    target.SetActive(newActive);
+                    ApplyActiveState(obj, _targetActiveState);
                 }
+            }
 
-                if (targets.Length > 0 && obj.scene.IsValid())
+            if (evt.rawType == EventType.MouseUp && evt.button == 0)
+            {
+                if (_isDraggingActiveToggle)
                 {
-                    EditorSceneManager.MarkSceneDirty(obj.scene);
+                    _isDraggingActiveToggle = false;
                 }
+            }
 
-                Event.current.Use();
+            if (evt.type == EventType.Repaint)
+            {
+                GUIStyle toggleStyle = EditorStyles.toggle;
+                toggleStyle.Draw(toggleRect, GUIContent.none, false, false, currentActive, false);
+            }
+        }
+
+        private void ApplyActiveState(GameObject go, bool active)
+        {
+            GameObject[] targets = Selection.gameObjects.Contains(go)
+                ? Selection.gameObjects
+                : new GameObject[] { go };
+
+            Undo.RecordObjects(targets, "Toggle GameObject Active (AHF)");
+
+            foreach (var target in targets)
+            {
+                target.SetActive(active);
+            }
+
+            if (targets.Length > 0 && go.scene.IsValid())
+            {
+                EditorSceneManager.MarkSceneDirty(go.scene);
             }
         }
     }
