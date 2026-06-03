@@ -9,11 +9,11 @@ namespace Kohcha.AvatarHierarchyFormatter
         public string FeatureName => "TreeLine";
         public bool IsEnabled => TreeLineSettingModule.IsEnabled;
 
-        public void OnGUI(int instanceID, Rect selectionRect)
+        public void OnGUI(AHFLayoutContext c)
         {
             if (!TreeLineSettingModule.IsEnabled) return;
 
-            if (HierarchyCacheManager.ItemCaches == null || !HierarchyCacheManager.ItemCaches.TryGetValue(instanceID, out var cacheData))
+            if (HierarchyCacheManager.ItemCaches == null || !HierarchyCacheManager.ItemCaches.TryGetValue(c.InstanceID, out var cacheData))
             {
                 return;
             }
@@ -32,8 +32,8 @@ namespace Kohcha.AvatarHierarchyFormatter
 
             float indentWidth = 14f;
 
-            float y = selectionRect.y;
-            float h = selectionRect.height;
+            float y = c.SelectionRect.y;
+            float h = c.SelectionRect.height;
             float halfH = h / 2f;
 
             for (int i = 0; i < cacheData.ParentLineFlags.Length; i++)

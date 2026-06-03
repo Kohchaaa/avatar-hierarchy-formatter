@@ -12,9 +12,9 @@ namespace Kohcha.AvatarHierarchyFormatter
         public string FeatureName => "ComponentIcon";
         public bool IsEnabled => ComponentIconSettingModule.IsEnabled;
 
-        public void OnGUI(int instanceID, Rect selectionRect)
+        public void OnGUI(AHFLayoutContext c)
         {
-            if (HierarchyCacheManager.ItemCaches == null || !HierarchyCacheManager.ItemCaches.TryGetValue(instanceID, out var cacheData))
+            if (HierarchyCacheManager.ItemCaches == null || !HierarchyCacheManager.ItemCaches.TryGetValue(c.InstanceID, out var cacheData))
             {
                 return;
             }
@@ -25,11 +25,11 @@ namespace Kohcha.AvatarHierarchyFormatter
             }
 
             float iconSize = 16f;
-            float offsetX = selectionRect.xMax - iconSize - ComponentIconSettingModule.IconOffset;
+            float offsetX = c.SelectionRect.xMax - iconSize - ComponentIconSettingModule.IconOffset;
 
             foreach (var icon in cacheData.ComponentIcons)
             {
-                Rect iconRect = new Rect(offsetX, selectionRect.y, iconSize, selectionRect.height);
+                Rect iconRect = new Rect(offsetX, c.SelectionRect.y, iconSize, c.SelectionRect.height);
 
                 string tooltipText = "";
 
@@ -63,7 +63,7 @@ namespace Kohcha.AvatarHierarchyFormatter
                     {
                         if (icon.CanToggle)
                         {
-                            ToggleComponentEnabled(icon.InstanceIDs, instanceID);
+                            ToggleComponentEnabled(icon.InstanceIDs, c.InstanceID);
                         }
                     }
                 }

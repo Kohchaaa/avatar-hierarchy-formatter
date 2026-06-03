@@ -9,11 +9,11 @@ namespace Kohcha.AvatarHierarchyFormatter
         public string FeatureName => "AvatarHighlight";
         public bool IsEnabled => AvatarHighlightSettingModule.IsEnabled;
 
-        public void OnGUI(int instanceID, Rect selectionRect)
+        public void OnGUI(AHFLayoutContext c)
         {
             if (!AvatarHighlightSettingModule.IsEnabled) return;
 
-            if (!HierarchyCacheManager.ItemCaches.TryGetValue(instanceID, out var cacheData))
+            if (!HierarchyCacheManager.ItemCaches.TryGetValue(c.InstanceID, out var cacheData))
             {
                 return;
             }
@@ -29,13 +29,13 @@ namespace Kohcha.AvatarHierarchyFormatter
             }
 
             float fixedX = 32f;
-            float rightEdge = selectionRect.x + selectionRect.width;
+            float rightEdge = c.SelectionRect.x + c.SelectionRect.width;
 
             Rect cardRect = new Rect(
                 fixedX,
-                selectionRect.y,
+                c.SelectionRect.y,
                 rightEdge,
-                selectionRect.height
+                c.SelectionRect.height
             );
 
             Rect line = new Rect(
@@ -45,7 +45,7 @@ namespace Kohcha.AvatarHierarchyFormatter
                 2f
             );
 
-            if (cacheData.AvatarRootId == instanceID)
+            if (cacheData.AvatarRootId == c.InstanceID)
             {
                 EditorGUI.DrawRect(line, AvatarHighlightSettingModule.GetLineColor(color));
                 EditorGUI.DrawRect(cardRect, AvatarHighlightSettingModule.GetHeaderColor(color));
