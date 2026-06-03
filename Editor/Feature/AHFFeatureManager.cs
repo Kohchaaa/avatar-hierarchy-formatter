@@ -23,11 +23,13 @@ namespace Kohcha.AvatarHierarchyFormatter
         {
             if (!GeneralSettingModule.IsEnabled_Plugin) return;
 
+            var context = new AHFLayoutContext(instanceID, selectionRect, 16f);
+
             foreach (var feature in Features)
             {
                 if (feature.IsEnabled)
                 {
-                    feature.OnGUI(instanceID, selectionRect);
+                    feature.OnGUI(context);
                 }
             }
         }

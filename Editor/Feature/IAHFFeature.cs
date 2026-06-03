@@ -9,6 +9,6 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         bool IsEnabled { get; }
 
-        void OnGUI(int instanceID, Rect selectionRect);
+        void OnGUI(AHFLayoutContext context);
     }
 }
