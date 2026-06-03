@@ -11,9 +11,12 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         static AHFFeatureManager()
         {
-            Features.Add(new ComponentIcon());
             Features.Add(new AvatarHighlight());
             Features.Add(new TreeLine());
+
+            Features.Add(new ToggleActive());
+            Features.Add(new ComponentIcon());
+
 
             EditorApplication.hierarchyWindowItemOnGUI -= OnHierarchyWindowGUI;
             EditorApplication.hierarchyWindowItemOnGUI += OnHierarchyWindowGUI;
