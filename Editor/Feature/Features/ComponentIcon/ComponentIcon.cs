@@ -25,11 +25,11 @@ namespace Kohcha.AvatarHierarchyFormatter
             }
 
             float iconSize = 16f;
-            float currentX = selectionRect.xMax - iconSize - ComponentIconSettingModule.IconOffset;
+            float offsetX = selectionRect.xMax - iconSize - ComponentIconSettingModule.IconOffset;
 
             foreach (var icon in cacheData.ComponentIcons)
             {
-                Rect iconRect = new Rect(currentX, selectionRect.y, iconSize, selectionRect.height);
+                Rect iconRect = new Rect(offsetX, selectionRect.y, iconSize, selectionRect.height);
 
                 string tooltipText = "";
 
@@ -68,7 +68,7 @@ namespace Kohcha.AvatarHierarchyFormatter
                     }
                 }
 
-                currentX -= iconSize + 2f;
+                offsetX -= iconSize + 2f;
             }
         }
 
