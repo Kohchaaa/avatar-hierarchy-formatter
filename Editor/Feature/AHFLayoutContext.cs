@@ -21,7 +21,7 @@ namespace Kohcha.AvatarHierarchyFormatter
     // 右から並べる用のオフセットと計算できるやつ持ってる構造体
     public struct AHFRightOffsetEngine
     {
-        public float CurrentOffset { get; private set; }
+        public float CurrentOffset { get; set; }
 
         public AHFRightOffsetEngine(float initialOffset)
         {
