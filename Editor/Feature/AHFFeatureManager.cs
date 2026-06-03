@@ -26,7 +26,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         {
             if (!GeneralSettingModule.IsEnabled_Plugin) return;
 
-            var context = new AHFLayoutContext(instanceID, selectionRect, 16f);
+            var context = new AHFLayoutContext(instanceID, selectionRect, 4f);
 
             foreach (var feature in Features)
             {
