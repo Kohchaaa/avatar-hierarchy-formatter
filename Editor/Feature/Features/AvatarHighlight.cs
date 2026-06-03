@@ -9,7 +9,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         public string FeatureName => "AvatarHighlight";
         public bool IsEnabled => AvatarHighlightSettingModule.IsEnabled;
 
-        public void OnGUI(AHFLayoutContext c)
+        public void OnGUI(ref AHFLayoutContext c)
         {
             if (!AvatarHighlightSettingModule.IsEnabled) return;
 

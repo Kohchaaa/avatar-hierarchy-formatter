@@ -9,7 +9,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         public string FeatureName => "TreeLine";
         public bool IsEnabled => TreeLineSettingModule.IsEnabled;
 
-        public void OnGUI(AHFLayoutContext c)
+        public void OnGUI(ref AHFLayoutContext c)
         {
             if (!TreeLineSettingModule.IsEnabled) return;
 

@@ -32,7 +32,7 @@ namespace Kohcha.AvatarHierarchyFormatter
             {
                 if (feature.IsEnabled)
                 {
-                    feature.OnGUI(context);
+                    feature.OnGUI(ref context);
                 }
             }
         }

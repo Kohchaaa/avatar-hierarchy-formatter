@@ -12,7 +12,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         public string FeatureName => "ComponentIcon";
         public bool IsEnabled => ComponentIconSettingModule.IsEnabled;
 
-        public void OnGUI(AHFLayoutContext c)
+        public void OnGUI(ref AHFLayoutContext c)
         {
             if (HierarchyCacheManager.ItemCaches == null || !HierarchyCacheManager.ItemCaches.TryGetValue(c.InstanceID, out var cacheData))
             {

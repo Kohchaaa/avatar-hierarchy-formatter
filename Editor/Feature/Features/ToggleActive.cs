@@ -12,7 +12,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         public string FeatureName => "ToggleActive";
         public bool IsEnabled => ToggleActiveSettingModule.IsEnabled;
 
-        public void OnGUI(AHFLayoutContext c)
+        public void OnGUI(ref AHFLayoutContext c)
         {
             if (!ToggleActiveSettingModule.IsEnabled) return;
 
