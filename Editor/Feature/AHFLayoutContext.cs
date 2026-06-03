@@ -28,7 +28,7 @@ namespace Kohcha.AvatarHierarchyFormatter
             CurrentOffset = initialOffset;
         }
 
-        public Rect AllocateRect(Rect selectionRect, float width, float paddingAfter)
+        public Rect GetOffsetRect(Rect selectionRect, float width, float paddingAfter)
         {
             Rect rect = new Rect(
                 selectionRect.xMax - CurrentOffset - width,
