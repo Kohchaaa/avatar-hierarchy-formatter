@@ -24,6 +24,8 @@ namespace Kohcha.AvatarHierarchyFormatter
             var obj = EditorUtility.InstanceIDToObject(c.InstanceID) as GameObject;
             if (obj == null) return;
 
+            c.RightOffset.CurrentOffset += ToggleActiveSettingModule.ButtonOffset;
+
             Rect toggleRect = c.RightOffset.GetOffsetRect(c.SelectionRect, 16, 4);
 
             toggleRect.y += (toggleRect.height - 16f) / 2f;
