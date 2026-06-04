@@ -25,7 +25,10 @@ namespace Kohcha.AvatarHierarchyFormatter
         {
             ItemCaches.Clear();
 
-            var descriptors = UnityEngine.Object.FindObjectsByType<VRCAvatarDescriptor>(FindObjectsSortMode.None);
+            var descriptors = UnityEngine.Object.FindObjectsByType<VRCAvatarDescriptor>(
+                FindObjectsInactive.Include,
+                FindObjectsSortMode.None
+            );
 
             foreach (var desc in descriptors)
             {
