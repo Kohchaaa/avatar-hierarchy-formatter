@@ -18,6 +18,7 @@ namespace Kohcha.AvatarHierarchyFormatter
             
             Modules.Add(new ObjectIconSettingModule());
             Modules.Add(new ToggleActiveSettingModule());
+            Modules.Add(new ToggleEOSettingModule());
             Modules.Add(new ComponentIconSettingModule());
 
             LoadAll();
