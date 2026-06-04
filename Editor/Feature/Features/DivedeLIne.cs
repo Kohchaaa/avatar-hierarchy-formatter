@@ -11,12 +11,14 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         public void OnGUI(ref AHFLayoutContext c)
         {
-            if (!ToggleEOSettingModule.IsEnabled) return;
+            if (!GeneralSettingModule.IsEnabled_Plugin) return;
 
             if (HierarchyCacheManager.ItemCaches == null || !HierarchyCacheManager.ItemCaches.TryGetValue(c.InstanceID, out var cacheData))
             {
                 return;
             }
+
+            if(!ToggleActiveSettingModule.IsEnabled && !ToggleEOSettingModule.IsEnabled) return;
 
             Event evt = Event.current;
 
