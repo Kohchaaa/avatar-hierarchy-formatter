@@ -15,6 +15,7 @@ namespace Kohcha.AvatarHierarchyFormatter
             Features.Add(new TreeLine());
 
             Features.Add(new ToggleActive());
+            Features.Add(new ToggleEO());
             Features.Add(new ComponentIcon());
 
 
