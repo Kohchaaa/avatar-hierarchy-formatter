@@ -31,12 +31,12 @@ namespace Kohcha.AvatarHierarchyFormatter
 
             if (evt.type == EventType.Repaint)
             {
-                GUIContent iconContent = new GUIContent
+/*                 GUIContent iconContent = new GUIContent
                 {
                     image = EditorGUIUtility.IconContent("console.warnicon").image
                 };
 
-                GUI.Box(iconRect, iconContent, GUIStyle.none);
+                GUI.Box(iconRect, iconContent, GUIStyle.none); */
             }
         }
     }
