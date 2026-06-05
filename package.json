@@ -1,6 +1,6 @@
 {
   "name": "jp.kohchaaa.avatar-hierarchy-formatter",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "displayName": "Avatar Hierarchy Formatter",
   "description": "Avatar Hierarchy Formatter",
   "unity": "2022.3",
@@ -10,7 +10,7 @@
     "url": "https://github.com/Kohchaaa/avatar-hierarchy-formatter.git"
   },
   "vpmDependencies": {
-
+    "jp.kohchaaa.kohcha-ui": "^0.0.0"
   },
   "keywords": [
     "VRChat",
