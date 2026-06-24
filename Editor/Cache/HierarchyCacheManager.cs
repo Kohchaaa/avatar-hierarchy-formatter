@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using VRC.Core;
 using VRC.SDK3.Avatars.Components;
@@ -30,14 +31,36 @@ namespace Kohcha.AvatarHierarchyFormatter
                 FindObjectsSortMode.None
             );
 
+            var processedRoots = new HashSet<Transform>();
+
             foreach (var desc in descriptors)
             {
+                if (desc == null) continue;
                 Transform rootXform = desc.transform;
+                if (processedRoots.Contains(rootXform)) continue;
+
+                processedRoots.Add(rootXform);
                 int rootId = rootXform.gameObject.GetInstanceID();
-
                 List<bool> currentLineStates = new List<bool>();
-
                 BuildTreeCache(rootXform, rootId, 0, false, currentLineStates);
+            }
+
+            var currentStage = PrefabStageUtility.GetCurrentPrefabStage();
+            if (currentStage != null && currentStage.prefabContentsRoot != null)
+            {
+                var prefabDescriptors = currentStage.prefabContentsRoot.GetComponentsInChildren<VRCAvatarDescriptor>(true);
+
+                foreach (var desc in prefabDescriptors)
+                {
+                    if (desc == null) continue;
+                    Transform rootXform = desc.transform;
+                    if (processedRoots.Contains(rootXform)) continue;
+
+                    processedRoots.Add(rootXform);
+                    int rootId = rootXform.gameObject.GetInstanceID();
+                    List<bool> currentLineStates = new List<bool>();
+                    BuildTreeCache(rootXform, rootId, 0, false, currentLineStates);
+                }
             }
         }
 
