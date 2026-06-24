@@ -40,14 +40,17 @@ namespace Kohcha.AvatarHierarchyFormatter
 
             Rect line = new Rect(
                 cardRect.x,
-                cardRect.y - 1,
+                cardRect.y + AvatarHighlightSettingModule.AvatarRootLineOffset,
                 cardRect.width,
-                2f
+                AvatarHighlightSettingModule.AvatarRootLineWeight
             );
 
             if (cacheData.AvatarRootId == c.InstanceID)
             {
-                EditorGUI.DrawRect(line, AvatarHighlightSettingModule.GetLineColor(color));
+                if (AvatarHighlightSettingModule.IsUseAvatarRootLine)
+                {
+                    EditorGUI.DrawRect(line, AvatarHighlightSettingModule.GetLineColor(color));
+                }
                 EditorGUI.DrawRect(cardRect, AvatarHighlightSettingModule.GetHeaderColor(color));
             }
             else
