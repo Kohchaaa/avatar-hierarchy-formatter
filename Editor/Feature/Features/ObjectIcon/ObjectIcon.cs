@@ -19,6 +19,11 @@ namespace Kohcha.AvatarHierarchyFormatter
                 return;
             }
 
+            if (!cacheData.ObjectIconId.HasValue) return;
+
+            var texture = AHFIconRegistry.GetTexture(cacheData.ObjectIconId.Value);
+            if (texture == null) return;
+
             var iconSize = 16;
             Rect iconRect = new Rect(
                 c.SelectionRect.x,
@@ -27,17 +32,7 @@ namespace Kohcha.AvatarHierarchyFormatter
                 iconSize
             );
 
-            Event evt = Event.current;
-
-            if (evt.type == EventType.Repaint)
-            {
-/*                 GUIContent iconContent = new GUIContent
-                {
-                    image = EditorGUIUtility.IconContent("console.warnicon").image
-                };
-
-                GUI.Box(iconRect, iconContent, GUIStyle.none); */
-            }
+            GUI.Box(iconRect, new GUIContent(texture), GUIStyle.none);
         }
     }
 }

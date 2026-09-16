@@ -15,7 +15,9 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         public ComponentIconInfo[] ComponentIcons;
 
-        public CacheData(int id, int indentLevel, bool isLastChild, bool[] flags, bool hasChildren, ComponentIconInfo[] componentIcons)
+        public AHFIconId? ObjectIconId;
+
+        public CacheData(int id, int indentLevel, bool isLastChild, bool[] flags, bool hasChildren, ComponentIconInfo[] componentIcons, AHFIconId? objectIconId)
         {
             AvatarRootId = id;
             IndentLevel = indentLevel;
@@ -23,6 +25,7 @@ namespace Kohcha.AvatarHierarchyFormatter
             ParentLineFlags = flags;
             HasChildren = hasChildren;
             ComponentIcons = componentIcons;
+            ObjectIconId = objectIconId;
         }
     }
 

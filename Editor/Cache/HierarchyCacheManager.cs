@@ -73,6 +73,10 @@ namespace Kohcha.AvatarHierarchyFormatter
 
             ComponentIconInfo[] icons = ConvertToIconInfo(components);
 
+            AHFIconId? objectIconId = AHFObjectIconJudgeManager.TryJudge(current.gameObject, components, out var judgedIconId)
+                ? judgedIconId
+                : (AHFIconId?)null;
+
             int childCount = current.childCount;
             bool hasChildren = (childCount > 0);
 
@@ -88,7 +92,8 @@ namespace Kohcha.AvatarHierarchyFormatter
                 isLastChild,
                 flags,
                 hasChildren,
-                icons
+                icons,
+                objectIconId
             );
 
             for (int i = 0; i < childCount; i++)
