@@ -12,6 +12,8 @@ namespace Kohcha.AvatarHierarchyFormatter
         static AHFObjectIconJudgeManager()
         {
             Judges.Add(new AvatarRootIconJudge());
+            Judges.Add(new ArmatureIconJudge());
+            Judges.Add(new ArmatureNameIconJudge());
         }
 
         public static bool TryJudge(GameObject go, Component[] components, out AHFIconId iconId)
