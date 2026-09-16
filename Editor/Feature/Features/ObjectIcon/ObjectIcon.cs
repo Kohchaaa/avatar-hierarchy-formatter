@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -32,7 +33,28 @@ namespace Kohcha.AvatarHierarchyFormatter
                 iconSize
             );
 
+            float windowWidth = AHFHierarchyWindowUtility.GetWidth() ?? 10000f;
+            Rect hoverRect = new Rect(0, c.SelectionRect.y, windowWidth, c.SelectionRect.height);
+
+            bool isSelected = Selection.instanceIDs.Contains(c.InstanceID);
+            bool isHovered = hoverRect.Contains(Event.current.mousePosition);
+            EditorGUI.DrawRect(iconRect, GetRowBackgroundColor(isSelected, isHovered));
+
             GUI.Box(iconRect, new GUIContent(texture), GUIStyle.none);
+        }
+
+        private static Color GetRowBackgroundColor(bool isSelected, bool isHovered)
+        {
+            if (EditorGUIUtility.isProSkin)
+            {
+                if (isSelected) return new Color32(44, 93, 135, 255);
+                if (isHovered) return new Color32(68, 68, 68, 255);
+                return new Color32(56, 56, 56, 255);
+            }
+
+            if (isSelected) return new Color32(58, 114, 176, 255);
+            if (isHovered) return new Color32(217, 217, 217, 255);
+            return new Color32(194, 194, 194, 255);
         }
     }
 }
