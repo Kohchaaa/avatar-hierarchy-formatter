@@ -11,9 +11,9 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         static AHFFeatureManager()
         {
+            Features.Add(new ObjectIcon());
             Features.Add(new AvatarHighlight());
             Features.Add(new TreeLine());
-            Features.Add(new ObjectIcon());
 
             Features.Add(new DevideLine());
             Features.Add(new ToggleActive());
