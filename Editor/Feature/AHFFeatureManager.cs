@@ -39,6 +39,12 @@ namespace Kohcha.AvatarHierarchyFormatter
                     feature.OnGUI(ref context);
                 }
             }
+
+            // 全Feature処理後(evt.Use()が呼ばれた後)に判定することで、
+            // 他Featureが消費したクリックをObjectIconの仮選択として誤検知しないようにする。
+            float windowWidth = AHFHierarchyWindowUtility.GetWidth() ?? 10000f;
+            Rect rowRect = new Rect(0, selectionRect.y, windowWidth, selectionRect.height);
+            AHFPendingSelectionTracker.Update(instanceID, rowRect);
         }
     }
 }
