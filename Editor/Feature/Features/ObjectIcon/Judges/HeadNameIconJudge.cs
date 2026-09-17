@@ -3,22 +3,20 @@ using UnityEngine;
 
 namespace Kohcha.AvatarHierarchyFormatter
 {
-    public class ArmatureNameIconJudge : IAHFObjectIconJudge
+    public class HeadNameIconJudge : IAHFObjectIconJudge
     {
-        public string JudgeName => "ArmatureName";
+        public string JudgeName => "HeadName";
 
-        private static readonly AHFIconId IconId = new AHFIconId("armature");
+        private static readonly AHFIconId IconId = new AHFIconId("head");
 
         private static readonly Regex NamePattern = new Regex(
-            @"^(armature|アーマチュア)(\.\d+)?$",
+            @"^(head)(\.\d+)?$",
             RegexOptions.IgnoreCase | RegexOptions.Compiled
         );
 
-        public static bool IsArmatureName(string name) => NamePattern.IsMatch(name);
-
         public bool TryJudge(GameObject go, Component[] components, out AHFIconId iconId)
         {
-            if (IsArmatureName(go.name))
+            if (NamePattern.IsMatch(go.name) && AHFUtil.HasArmatureAncestor(go.transform))
             {
                 iconId = IconId;
                 return true;
