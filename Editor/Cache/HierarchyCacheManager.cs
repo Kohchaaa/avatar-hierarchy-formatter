@@ -77,6 +77,10 @@ namespace Kohcha.AvatarHierarchyFormatter
                 ? judgedIconId
                 : (AHFIconId?)null;
 
+            AHFIconId? overrideIconId = AHFIconOverrideManager.TryGetOverride(currentId, out var overriddenIconId)
+                ? overriddenIconId
+                : (AHFIconId?)null;
+
             int childCount = current.childCount;
             bool hasChildren = (childCount > 0);
 
@@ -93,7 +97,8 @@ namespace Kohcha.AvatarHierarchyFormatter
                 flags,
                 hasChildren,
                 icons,
-                objectIconId
+                objectIconId,
+                overrideIconId
             );
 
             for (int i = 0; i < childCount; i++)

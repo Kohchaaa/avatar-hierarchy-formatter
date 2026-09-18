@@ -20,9 +20,10 @@ namespace Kohcha.AvatarHierarchyFormatter
                 return;
             }
 
-            if (!cacheData.ObjectIconId.HasValue) return;
+            var iconId = cacheData.OverrideIconId ?? cacheData.ObjectIconId;
+            if (!iconId.HasValue) return;
 
-            var texture = AHFIconRegistry.GetTexture(cacheData.ObjectIconId.Value);
+            var texture = AHFIconRegistry.GetTexture(iconId.Value);
             if (texture == null) return;
 
             var iconSize = 16;
