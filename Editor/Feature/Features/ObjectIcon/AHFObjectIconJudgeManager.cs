@@ -14,6 +14,7 @@ namespace Kohcha.AvatarHierarchyFormatter
             Judges.Add(new AvatarRootIconJudge());
             Judges.Add(new ArmatureIconJudge());
             Judges.Add(new ArmatureNameIconJudge());
+            Judges.Add(new OutfitIconJudge());
             Judges.Add(new HipsIconJudge());
             Judges.Add(new HipsNameIconJudge());
             Judges.Add(new HeadIconJudge());
