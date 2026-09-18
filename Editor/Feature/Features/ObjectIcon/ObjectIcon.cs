@@ -20,12 +20,6 @@ namespace Kohcha.AvatarHierarchyFormatter
                 return;
             }
 
-            var iconId = cacheData.OverrideIconId ?? cacheData.ObjectIconId;
-            if (!iconId.HasValue) return;
-
-            var texture = AHFIconRegistry.GetTexture(iconId.Value);
-            if (texture == null) return;
-
             var iconSize = 16;
             Rect iconRect = new Rect(
                 c.SelectionRect.x,
@@ -33,6 +27,20 @@ namespace Kohcha.AvatarHierarchyFormatter
                 iconSize,
                 iconSize
             );
+
+            Event evt = Event.current;
+
+            if (evt.type == EventType.ContextClick && iconRect.Contains(evt.mousePosition))
+            {
+                evt.Use();
+                PopupWindow.Show(iconRect, new AHFIconPickerPopup(c.InstanceID));
+            }
+
+            var iconId = cacheData.OverrideIconId ?? cacheData.ObjectIconId;
+            if (!iconId.HasValue) return;
+
+            var texture = AHFIconRegistry.GetTexture(iconId.Value);
+            if (texture == null) return;
 
             float windowWidth = AHFHierarchyWindowUtility.GetWidth() ?? 10000f;
             Rect hoverRect = new Rect(0, c.SelectionRect.y, windowWidth, c.SelectionRect.height);
