@@ -10,10 +10,12 @@ namespace Kohcha.AvatarHierarchyFormatter
         private static readonly AHFIconId BodyIconId = new AHFIconId("body");
         private static readonly AHFIconId BodyBaseIconId = new AHFIconId("body_base");
 
-        // VRCアバターの慣例: 頭のメッシュは"Body"、体のメッシュは"BodyBase"(区切り記号の有無は問わない)
-        // 「キャラ名_Body_Base」のように接頭辞が付くことが多いため、末尾一致で判定する
+        // VRCアバターの慣例: 頭のメッシュは"Body"、体のメッシュは"BodyBase"
+        // 「キャラ名_Body_Base」のように接頭辞が付くことが多いため、末尾一致で判定する。
+        // "_base"に限らず"_b"や"_2"等、bodyの後に区切り文字+何かが続くケース全般を体として扱う
+        // (区切り文字を必須にすることで"Bodysuit"のような偶然の一致は除外する)
         private static readonly Regex BodyBasePattern = new Regex(
-            @"(^|[-_ ])body[-_ ]?base(\.\d+)?$",
+            @"(^|[-_ ])body[-_ ].+$",
             RegexOptions.IgnoreCase | RegexOptions.Compiled
         );
 
