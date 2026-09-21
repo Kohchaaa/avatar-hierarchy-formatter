@@ -36,11 +36,9 @@ namespace Kohcha.AvatarHierarchyFormatter
                 PopupWindow.Show(iconRect, new AHFIconPickerPopup(c.InstanceID));
             }
 
-            var iconId = cacheData.OverrideIconId ?? cacheData.ObjectIconId;
-            if (!iconId.HasValue) return;
-
-            var texture = AHFIconRegistry.GetTexture(iconId.Value);
-            if (texture == null) return;
+            // 上書き先のアイコンが削除・リネームされている場合は、IDだけが残って解決できない。
+            // その時はアイコンを消さずに自動判定へ戻す。
+            if (!TryResolveTexture(cacheData, out var texture)) return;
 
             float windowWidth = AHFHierarchyWindowUtility.GetWidth() ?? 10000f;
             Rect hoverRect = new Rect(0, c.SelectionRect.y, windowWidth, c.SelectionRect.height);
@@ -63,6 +61,22 @@ namespace Kohcha.AvatarHierarchyFormatter
             EditorGUI.DrawRect(iconRect, GetRowBackgroundColor(isSelected, isHovered));
 
             GUI.Box(iconRect, new GUIContent(texture), GUIStyle.none);
+        }
+
+        private static bool TryResolveTexture(in CacheData cacheData, out Texture2D texture)
+        {
+            if (cacheData.OverrideIconId.HasValue && AHFIconRegistry.TryGetTexture(cacheData.OverrideIconId.Value, out texture))
+            {
+                return true;
+            }
+
+            if (cacheData.ObjectIconId.HasValue && AHFIconRegistry.TryGetTexture(cacheData.ObjectIconId.Value, out texture))
+            {
+                return true;
+            }
+
+            texture = null;
+            return false;
         }
 
         private static Color GetRowBackgroundColor(bool isSelected, bool isHovered)

@@ -32,6 +32,14 @@ namespace Kohcha.AvatarHierarchyFormatter
         public static void Unregister(AHFIconId id) => _entries.Remove(id);
         public static bool TryGetEntry(AHFIconId id, out AHFIconEntry entry) => _entries.TryGetValue(id, out entry);
         public static Texture2D GetTexture(AHFIconId id) => TryGetEntry(id, out var entry) ? entry.GetTexture() : null;
+
+        // エントリが消えている場合だけでなく、画像アセット自体が消えている場合もfalseを返す
+        public static bool TryGetTexture(AHFIconId id, out Texture2D texture)
+        {
+            texture = GetTexture(id);
+            return texture != null;
+        }
+
         public static IReadOnlyCollection<AHFIconEntry> All => _entries.Values;
     }
 }

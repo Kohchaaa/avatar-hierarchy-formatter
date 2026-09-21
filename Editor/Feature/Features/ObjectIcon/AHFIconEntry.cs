@@ -9,6 +9,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         public string DisplayName;
         public string IconGUID;
         public string IconPathOrName;
+        public bool IsUserDefined;
         private Texture2D _cachedTexture;
 
         public Texture2D GetTexture()
