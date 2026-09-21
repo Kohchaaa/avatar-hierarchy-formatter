@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
@@ -75,6 +76,39 @@ namespace Kohcha.AvatarHierarchyFormatter
 
             Save();
         }
+
+        public static int Count => _data.Entries.Count;
+
+        public static int CountForAssetGuids(ICollection<string> assetGuids) =>
+            _data.Entries.Count(e => MatchesAssetGuid(e, assetGuids));
+
+        public static int ClearForAssetGuids(ICollection<string> assetGuids)
+        {
+            Undo.RecordObject(_data, "Clear Custom Icons");
+
+            int removed = _data.Entries.RemoveAll(e => MatchesAssetGuid(e, assetGuids));
+            if (removed > 0) Save();
+
+            return removed;
+        }
+
+        public static int ClearAll()
+        {
+            Undo.RecordObject(_data, "Clear Custom Icons");
+
+            int removed = _data.Entries.Count;
+            _data.Entries.Clear();
+            if (removed > 0) Save();
+
+            return removed;
+        }
+
+        // 保存しているIDから、それがどのシーン/PrefabのオブジェクトかをassetGUIDで判別する。
+        // オブジェクトを解決できるかで判定すると、開いていないシーンのものも「解決できない」に
+        // なるため、消してはいけない分まで対象に入ってしまう。
+        private static bool MatchesAssetGuid(AHFIconOverrideEntry entry, ICollection<string> assetGuids) =>
+            GlobalObjectId.TryParse(entry.GlobalObjectId, out var globalObjectId)
+            && assetGuids.Contains(globalObjectId.assetGUID.ToString());
 
         public static void RemoveOverride(int instanceId)
         {
