@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using UnityEditor;
 
 namespace Kohcha.AvatarHierarchyFormatter
