@@ -41,7 +41,7 @@ namespace Kohcha.AvatarHierarchyFormatter
             this.SaveBool(Key_Enabled, IsEnabled);
 
             // テーマカラー使うか
-            this.SaveBool(Key_Enabled, IsUseThemeColor);
+            this.SaveBool(Key_UseThemeColor, IsUseThemeColor);
 
             // オリジナルカラー
             this.SaveColor(Key_OriginalColor, OriginalColor);
