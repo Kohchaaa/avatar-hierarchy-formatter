@@ -20,7 +20,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         private static void Load()
         {
-            _data = ScriptableObject.CreateInstance<AHFIconOverrideData>();
+            _data = new AHFIconOverrideData();
 
             if (File.Exists(FilePath))
             {
@@ -62,8 +62,6 @@ namespace Kohcha.AvatarHierarchyFormatter
         {
             string id = GetId(instanceId);
 
-            Undo.RecordObject(_data, "Set Custom Icon");
-
             var entry = _data.Entries.FirstOrDefault(e => e.GlobalObjectId == id);
             if (entry != null)
             {
@@ -84,8 +82,6 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         public static int ClearForAssetGuids(ICollection<string> assetGuids)
         {
-            Undo.RecordObject(_data, "Clear Custom Icons");
-
             int removed = _data.Entries.RemoveAll(e => MatchesAssetGuid(e, assetGuids));
             if (removed > 0) Save();
 
@@ -94,8 +90,6 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         public static int ClearAll()
         {
-            Undo.RecordObject(_data, "Clear Custom Icons");
-
             int removed = _data.Entries.Count;
             _data.Entries.Clear();
             if (removed > 0) Save();
@@ -113,8 +107,6 @@ namespace Kohcha.AvatarHierarchyFormatter
         public static void RemoveOverride(int instanceId)
         {
             string id = GetId(instanceId);
-
-            Undo.RecordObject(_data, "Remove Custom Icon");
 
             _data.Entries.RemoveAll(e => e.GlobalObjectId == id);
 
