@@ -38,7 +38,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 
             bool isEditorOnly = obj.CompareTag("EditorOnly");
 
-            if (evt.rawType == EventType.MouseDown && evt.button == 0 && isMouseOver)
+            if (evt.type == EventType.MouseDown && evt.button == 0 && isMouseOver)
             {
                 _isDraggingEditorOnly = true;
                 _targetEditorOnlyState = !isEditorOnly;
@@ -46,7 +46,9 @@ namespace Kohcha.AvatarHierarchyFormatter
                 ApplyEditorOnly(obj, _targetEditorOnlyState);
                 evt.Use();
             }
-            else if (_isDraggingEditorOnly && isMouseOver)
+            // RepaintやLayoutでも成立してしまうと、ホバーしただけで適用される。入力イベントに限定する
+            else if (evt.type != EventType.Repaint && evt.type != EventType.Layout
+                     && _isDraggingEditorOnly && isMouseOver)
             {
                 if (isEditorOnly != _targetEditorOnlyState)
                 {
@@ -54,6 +56,7 @@ namespace Kohcha.AvatarHierarchyFormatter
                 }
             }
 
+            // 解除側はrawTypeのまま。他FeatureがMouseUpをUse()してもフラグは必ず降ろしたい
             if (evt.rawType == EventType.MouseUp && evt.button == 0)
             {
                 if (_isDraggingEditorOnly)
@@ -77,13 +80,16 @@ namespace Kohcha.AvatarHierarchyFormatter
                     };
                 }
 
+                // Lightスキンでは背景が明るいので、白のままだとOFF時がほぼ判別できない
+                float v = EditorGUIUtility.isProSkin ? 1f : 0f;
+
                 if (currentTagState)
                 {
-                    _textStyle.normal.textColor = new Color(1f, 1f, 1f, 1f);
+                    _textStyle.normal.textColor = new Color(v, v, v, 1f);
                 }
                 else
                 {
-                    _textStyle.normal.textColor = new Color(1f, 1f, 1f, 0.15f);
+                    _textStyle.normal.textColor = new Color(v, v, v, 0.25f);
                 }
 
                 _textStyle.Draw(toggleRect, text, false, false, false, false);

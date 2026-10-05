@@ -37,7 +37,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 
             bool currentActive = obj.activeSelf;
 
-            if (evt.rawType == EventType.MouseDown && evt.button == 0 && isMouseOver)
+            if (evt.type == EventType.MouseDown && evt.button == 0 && isMouseOver)
             {
                 _isDraggingActiveToggle = true;
                 _targetActiveState = !currentActive;
@@ -45,7 +45,9 @@ namespace Kohcha.AvatarHierarchyFormatter
                 ApplyActiveState(obj, _targetActiveState);
                 evt.Use();
             }
-            else if (_isDraggingActiveToggle && isMouseOver)
+            // RepaintやLayoutでも成立してしまうと、ホバーしただけで適用される。入力イベントに限定する
+            else if (evt.type != EventType.Repaint && evt.type != EventType.Layout
+                     && _isDraggingActiveToggle && isMouseOver)
             {
                 if (currentActive != _targetActiveState)
                 {
@@ -53,6 +55,7 @@ namespace Kohcha.AvatarHierarchyFormatter
                 }
             }
 
+            // 解除側はrawTypeのまま。他FeatureがMouseUpをUse()してもフラグは必ず降ろしたい
             if (evt.rawType == EventType.MouseUp && evt.button == 0)
             {
                 if (_isDraggingActiveToggle)
