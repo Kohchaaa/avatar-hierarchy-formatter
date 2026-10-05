@@ -108,18 +108,24 @@ namespace Kohcha.AvatarHierarchyFormatter
             EditorGUILayout.LabelField("手動で設定したアイコン", total + " 件");
 
             // 読み書きに失敗しても操作自体は続行できるため、ダイアログで作業を止めず
-            // ここに残す形で気づけるようにする
-            if (AHFIconOverrideManager.LastError != null)
+            // ここに残す形で気づけるようにする。
+            // 読み込み失敗と保存失敗は同時に成立しうるので、それぞれ独立に出す
+            if (AHFIconOverrideManager.LoadError != null)
             {
-                // LastErrorは読み込み失敗でも立つ。原因で状況が全く違うので文言を分ける
-                string detail = AHFIconOverrideManager.HasUnsavedChanges
-                    ? "変更はメモリ上にだけ残っています。次にアイコンを設定したときか、"
-                      + "スクリプトの再コンパイル・Playモードに入る直前に、自動で保存をやり直します。"
-                    : "このセッションでは上書き設定を0件として扱っています。"
-                      + "読めなかったファイルは拡張子に .corrupt を付けて同じ場所に退避してあります。";
-
                 EditorGUILayout.HelpBox(
-                    AHFIconOverrideManager.LastError + "\n" + detail,
+                    AHFIconOverrideManager.LoadError
+                    + "\nこのセッションでは上書き設定を0件として扱っています。"
+                    + "読めなかったファイルは拡張子に .corrupt を付けて同じ場所に退避してあります。",
+                    MessageType.Warning
+                );
+            }
+
+            if (AHFIconOverrideManager.SaveError != null)
+            {
+                EditorGUILayout.HelpBox(
+                    AHFIconOverrideManager.SaveError
+                    + "\n変更はメモリ上にだけ残っています。次にアイコンを設定したときか、"
+                    + "スクリプトの再コンパイル・Playモードに入る直前に、自動で保存をやり直します。",
                     MessageType.Warning
                 );
             }

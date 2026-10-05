@@ -13,16 +13,24 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         private static AHFIconOverrideData _data;
 
-        /// <summary>
-        /// 直近の読み書きが失敗した理由。成功していればnull
-        /// </summary>
-        public static string LastError { get; private set; }
+        // 読み込みの失敗と保存の失敗は、ユーザーにとって全く違う状況（前者は保存済みの分が
+        // 消えている、後者はこれからの分が残っていない）なので、1つの変数にまとめない。
+        // まとめると、保存が成功した時に読み込み失敗の記録まで消えてしまう
 
         /// <summary>
-        /// 保存に失敗して、メモリ上にしか存在しない変更があるかどうか。
-        /// LastErrorは読み込み失敗でも立つので、原因の区別にはこちらを見る
+        /// 保存されていた内容を読み込めなかった理由。読み込めていればnull
         /// </summary>
-        public static bool HasUnsavedChanges { get; private set; }
+        public static string LoadError { get; private set; }
+
+        /// <summary>
+        /// 保存できなかった理由。保存できていればnull
+        /// </summary>
+        public static string SaveError { get; private set; }
+
+        /// <summary>
+        /// 保存に失敗して、メモリ上にしか存在しない変更があるかどうか
+        /// </summary>
+        public static bool HasUnsavedChanges => SaveError != null;
 
         static AHFIconOverrideManager()
         {
@@ -48,7 +56,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 
             // ここで失敗した時点で変更は本当に失われる。警告ではなくエラーで出す
             Debug.LogError(
-                $"[AHF] アイコンの上書き設定を保存できなかったため、この変更は失われます。\n{LastError}\n{FilePath}"
+                $"[AHF] アイコンの上書き設定を保存できなかったため、この変更は失われます。\n{SaveError}\n{FilePath}"
             );
         }
 
@@ -59,7 +67,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         private static void Load()
         {
             _data = new AHFIconOverrideData();
-            LastError = null;
+            LoadError = null;
 
             if (!File.Exists(FilePath)) return;
 
@@ -72,8 +80,8 @@ namespace Kohcha.AvatarHierarchyFormatter
             {
                 // 部分的に読み込まれている可能性があるので作り直す
                 _data = new AHFIconOverrideData();
-                LastError = $"アイコンの上書き設定を読み込めませんでした: {e.Message}";
-                Debug.LogWarning($"[AHF] {LastError}\n{FilePath}");
+                LoadError = $"アイコンの上書き設定を読み込めませんでした: {e.Message}";
+                Debug.LogWarning($"[AHF] {LoadError}\n{FilePath}");
 
                 // この後ユーザーがアイコンを1つ設定すると、Saveが「0件＋その1件」で
                 // ファイル全体を上書きし、読めなかった内容を復旧する手段が無くなる。
@@ -86,7 +94,21 @@ namespace Kohcha.AvatarHierarchyFormatter
         {
             try
             {
-                File.Copy(FilePath, FilePath + ".corrupt", true);
+                string backupPath = FilePath + ".corrupt";
+
+                // 退避は最後の復旧手段なので、既にある退避ファイルを上書きして
+                // データを減らすことがあってはいけない。
+                // 1回目の破損を退避 → 空に近い状態で保存し直し → 2回目の破損 で上書きすると、
+                // 価値のある1回目の退避が少ない内容で潰れる。
+                // サイズで比べて大きい方を残す（同じ内容なら等しいので、
+                // 破損したままリロードを繰り返しても無駄な書き込みが起きない）
+                if (File.Exists(backupPath)
+                    && new FileInfo(backupPath).Length >= new FileInfo(FilePath).Length)
+                {
+                    return;
+                }
+
+                File.Copy(FilePath, backupPath, true);
             }
             catch (System.Exception)
             {
@@ -99,8 +121,6 @@ namespace Kohcha.AvatarHierarchyFormatter
         // 既存のファイルが壊れないようにする（成功か失敗かのどちらかに倒す）
         private static bool Save()
         {
-            LastError = null;
-
             string tempPath = FilePath + ".tmp";
 
             try
@@ -123,17 +143,16 @@ namespace Kohcha.AvatarHierarchyFormatter
                     File.Move(tempPath, FilePath);
                 }
 
-                HasUnsavedChanges = false;
+                SaveError = null;
                 return true;
             }
             catch (System.Exception e)
             {
-                HasUnsavedChanges = true;
-                LastError = $"アイコンの上書き設定を保存できませんでした: {e.Message}";
+                SaveError = $"アイコンの上書き設定を保存できませんでした: {e.Message}";
 
                 // 操作した直後に、操作した本人が見る場所へ出す。
                 // 設定画面のHelpBoxは後から気づくための補助で、これの代わりにはならない
-                Debug.LogWarning($"[AHF] {LastError}\n{FilePath}");
+                Debug.LogWarning($"[AHF] {SaveError}\n{FilePath}");
 
                 try
                 {
