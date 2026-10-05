@@ -15,16 +15,19 @@ namespace Kohcha.AvatarHierarchyFormatter
             Features.Add(new AvatarHighlight());
             Features.Add(new TreeLine());
 
-            Features.Add(new DevideLine());
+            Features.Add(new DevideLine(() => HasToggles));
             Features.Add(new ToggleActive());
             Features.Add(new ToggleEO());
-            Features.Add(new DevideLine());
+            Features.Add(new DevideLine(() => HasToggles && ComponentIconSettingModule.IsEnabled));
             Features.Add(new ComponentIcon());
 
 
             EditorApplication.hierarchyWindowItemOnGUI -= OnHierarchyWindowGUI;
             EditorApplication.hierarchyWindowItemOnGUI += OnHierarchyWindowGUI;
         }
+
+        private static bool HasToggles =>
+            ToggleActiveSettingModule.IsEnabled || ToggleEOSettingModule.IsEnabled;
 
         private static void OnHierarchyWindowGUI(int instanceID, Rect selectionRect)
         {
