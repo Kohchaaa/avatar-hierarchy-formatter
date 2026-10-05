@@ -20,6 +20,9 @@ namespace Kohcha.AvatarHierarchyFormatter
         {
             if (string.IsNullOrEmpty(name)) return name;
 
+            // 複製したSuffixは)で終わるので、その判定をし、違ったら早期リターン
+            if (name[name.Length - 1] != ')') return name;
+
             return DuplicateSuffixPattern.Replace(name, "");
         }
     }
