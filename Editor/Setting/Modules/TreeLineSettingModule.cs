@@ -21,7 +21,6 @@ namespace Kohcha.AvatarHierarchyFormatter
         // オリジナルカラー
         private const string Key_OriginalColor = "OriginalColor";
         public static Color OriginalColor = new Color32(126, 126, 126, 255);
-        private const string DefaultColorHEX = "7E7E7E";
 
         public void Load()
         {
