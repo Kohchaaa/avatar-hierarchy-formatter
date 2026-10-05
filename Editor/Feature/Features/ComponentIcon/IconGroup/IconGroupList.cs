@@ -49,7 +49,6 @@ namespace Kohcha.AvatarHierarchyFormatter
                 IsCustomTexture = false,
                 GudgeIsInclude = c => 
                     IsContainNamespace(c, "modular_avatar") ||
-                    IsContainNamespace(c, "MA") || 
                     IsContainNamespace(c, "ModularAvatar")
             },
             new IconGroup
