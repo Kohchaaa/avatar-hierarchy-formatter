@@ -9,17 +9,18 @@ namespace Kohcha.AvatarHierarchyFormatter
         public string FeatureName => "DeivdeLine";
 
         // 区切り線は複数登録され、それぞれ区切る対象が違うので、条件を外から渡してもらう。
-        // 設定がONでも、その行には何も描かれないことがある（コンポーネントを持たない
-        // ボーンではComponentIconが1つも出ない）。設定だけで判定すると、
-        // 隣に何も無い行にまで線が出るので、判定には行のキャッシュを渡す
-        private readonly Func<CacheData, bool> _hasNeighbors;
+        // 判定は設定単位で、行ごとの内容は見ない。
+        // 行にコンポーネントアイコンが1つも無い時に線を消す実装を試したが、
+        // ボーンの行だけ線が抜けて列が揃わず、かえって不揃いに見えたため戻した。
+        // 線は「隣に何かがある印」ではなく「列の区切り」として扱う
+        private readonly Func<bool> _hasNeighbors;
 
-        public DevideLine(Func<CacheData, bool> hasNeighbors)
+        public DevideLine(Func<bool> hasNeighbors)
         {
             _hasNeighbors = hasNeighbors;
         }
 
-        public bool IsEnabled => GeneralSettingModule.IsEnabled_Plugin;
+        public bool IsEnabled => GeneralSettingModule.IsEnabled_Plugin && _hasNeighbors();
 
         public void OnGUI(ref AHFLayoutContext c)
         {
@@ -29,9 +30,6 @@ namespace Kohcha.AvatarHierarchyFormatter
             {
                 return;
             }
-
-            // 余白を消費する前に判定する。ここで抜ければレイアウトに影響しない
-            if (!_hasNeighbors(cacheData)) return;
 
             Event evt = Event.current;
 
