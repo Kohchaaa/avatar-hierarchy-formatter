@@ -14,7 +14,8 @@ namespace Kohcha.AvatarHierarchyFormatter
             RegexOptions.IgnoreCase | RegexOptions.Compiled
         );
 
-        public static bool IsArmatureName(string name) => NamePattern.IsMatch(name);
+        public static bool IsArmatureName(string name) =>
+            NamePattern.IsMatch(AHFUtil.StripDuplicateSuffix(name));
 
         public bool TryJudge(GameObject go, Component[] components, out AHFIconId iconId)
         {

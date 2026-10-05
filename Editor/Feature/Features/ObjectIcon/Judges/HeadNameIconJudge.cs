@@ -16,7 +16,8 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         public bool TryJudge(GameObject go, Component[] components, out AHFIconId iconId)
         {
-            if (NamePattern.IsMatch(go.name) && AHFUtil.HasArmatureAncestor(go.transform))
+            if (NamePattern.IsMatch(AHFUtil.StripDuplicateSuffix(go.name))
+                && AHFUtil.HasArmatureAncestor(go.transform))
             {
                 iconId = IconId;
                 return true;

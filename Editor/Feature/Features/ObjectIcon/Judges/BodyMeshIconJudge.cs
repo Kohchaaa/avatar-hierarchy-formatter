@@ -24,17 +24,11 @@ namespace Kohcha.AvatarHierarchyFormatter
             RegexOptions.IgnoreCase | RegexOptions.Compiled
         );
 
-        // Unityの複製は"Body (1)"という名前になる。区切り文字に半角スペースを含めているため、
-        // そのまま判定すると"body" + 区切り + 何か に一致して体側になってしまう。
-        // 複製しただけで意味が変わるのはおかしいので、判定の前にこのサフィックスを落とす
-        private static readonly Regex DuplicateSuffixPattern = new Regex(
-            @"\s*\(\d+\)$",
-            RegexOptions.Compiled
-        );
-
         public bool TryJudge(GameObject go, Component[] components, out AHFIconId iconId)
         {
-            string name = DuplicateSuffixPattern.Replace(go.name, "");
+            // 区切り文字に半角スペースを含めているので、"Body (1)"をそのまま判定すると
+            // "body" + 区切り + 何か に一致して体側になってしまう
+            string name = AHFUtil.StripDuplicateSuffix(go.name);
 
             if (BodyBasePattern.IsMatch(name))
             {
