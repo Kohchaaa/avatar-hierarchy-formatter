@@ -15,10 +15,13 @@ namespace Kohcha.AvatarHierarchyFormatter
             Features.Add(new AvatarHighlight());
             Features.Add(new TreeLine());
 
-            Features.Add(new DevideLine(() => HasToggles));
+            // 右側のウィジェットは AHFRightOffsetEngine で右端から詰めていくので、
+            // 先に登録したものほど右に出る。実際の並びは左から
+            // [ComponentIcon][DevideLine2][ToggleEO][ToggleActive][DevideLine1]
+            Features.Add(new DevideLine(_ => HasToggles));
             Features.Add(new ToggleActive());
             Features.Add(new ToggleEO());
-            Features.Add(new DevideLine(() => HasToggles && ComponentIconSettingModule.IsEnabled));
+            Features.Add(new DevideLine(cache => HasToggles && HasComponentIcons(cache)));
             Features.Add(new ComponentIcon());
 
 
@@ -28,6 +31,12 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         private static bool HasToggles =>
             ToggleActiveSettingModule.IsEnabled || ToggleEOSettingModule.IsEnabled;
+
+        // 設定がONでも、その行にアイコンが1つも無ければComponentIconは何も描かない
+        private static bool HasComponentIcons(CacheData cache) =>
+            ComponentIconSettingModule.IsEnabled
+            && cache.ComponentIcons != null
+            && cache.ComponentIcons.Length > 0;
 
         private static void OnHierarchyWindowGUI(int instanceID, Rect selectionRect)
         {
