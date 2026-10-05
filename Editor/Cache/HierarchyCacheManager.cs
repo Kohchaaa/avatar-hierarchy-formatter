@@ -19,7 +19,18 @@ namespace Kohcha.AvatarHierarchyFormatter
         {
             EditorApplication.hierarchyChanged += CacheHierarchyObjectData;
 
+            // コンポーネントのenabled変更は階層構造を変えないのでhierarchyChangedが飛ばない。
+            // Undo/Redoやインスペクタからの直接操作にアイコンを追従させるために購読する
+            Undo.undoRedoPerformed -= OnUndoRedo;
+            Undo.undoRedoPerformed += OnUndoRedo;
+
             CacheHierarchyObjectData();
+        }
+
+        private static void OnUndoRedo()
+        {
+            CacheHierarchyObjectData();
+            EditorApplication.RepaintHierarchyWindow();
         }
 
         public static void CacheHierarchyObjectData()
