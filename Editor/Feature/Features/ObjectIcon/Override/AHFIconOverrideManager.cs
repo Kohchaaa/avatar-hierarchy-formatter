@@ -14,13 +14,42 @@ namespace Kohcha.AvatarHierarchyFormatter
         private static AHFIconOverrideData _data;
 
         /// <summary>
-        /// 直近の読み書きが失敗した理由。成功していればnull。設定画面の警告表示に使う
+        /// 直近の読み書きが失敗した理由。成功していればnull
         /// </summary>
         public static string LastError { get; private set; }
+
+        /// <summary>
+        /// 保存に失敗して、メモリ上にしか存在しない変更があるかどうか。
+        /// LastErrorは読み込み失敗でも立つので、原因の区別にはこちらを見る
+        /// </summary>
+        public static bool HasUnsavedChanges { get; private set; }
 
         static AHFIconOverrideManager()
         {
             Load();
+
+            // メモリ上の変更はドメインリロード（スクリプト再コンパイル、Playモード入り）で
+            // 消える。Load()が走り直してディスクの内容に戻るため、ユーザーが気づく機会が無い。
+            // 消える直前がやり直す最後のタイミングなので、ここで書き戻しを試す
+            AssemblyReloadEvents.beforeAssemblyReload -= FlushIfNeeded;
+            AssemblyReloadEvents.beforeAssemblyReload += FlushIfNeeded;
+
+            EditorApplication.quitting -= FlushIfNeeded;
+            EditorApplication.quitting += FlushIfNeeded;
+        }
+
+        // 保存が失敗したまま変更が残っている場合に、もう一度だけ書き込みを試す。
+        // ファイルの一時的なロック（ウイルス対策ソフト等）はこれで吸収できる
+        private static void FlushIfNeeded()
+        {
+            if (!HasUnsavedChanges) return;
+
+            if (Save()) return;
+
+            // ここで失敗した時点で変更は本当に失われる。警告ではなくエラーで出す
+            Debug.LogError(
+                $"[AHF] アイコンの上書き設定を保存できなかったため、この変更は失われます。\n{LastError}\n{FilePath}"
+            );
         }
 
         // 静的コンストラクタから呼ばれるため、ここで例外を逃がすと型が失敗状態でキャッシュされ、
@@ -45,6 +74,24 @@ namespace Kohcha.AvatarHierarchyFormatter
                 _data = new AHFIconOverrideData();
                 LastError = $"アイコンの上書き設定を読み込めませんでした: {e.Message}";
                 Debug.LogWarning($"[AHF] {LastError}\n{FilePath}");
+
+                // この後ユーザーがアイコンを1つ設定すると、Saveが「0件＋その1件」で
+                // ファイル全体を上書きし、読めなかった内容を復旧する手段が無くなる。
+                // JSONが途中で切れているだけなら手で直せることもあるので、退避しておく
+                BackupUnreadableFile();
+            }
+        }
+
+        private static void BackupUnreadableFile()
+        {
+            try
+            {
+                File.Copy(FilePath, FilePath + ".corrupt", true);
+            }
+            catch (System.Exception)
+            {
+                // 退避できなくても読み込み自体は空データで続行する。
+                // ここで投げると静的コンストラクタまで巻き込むので絶対に逃がさない
             }
         }
 
@@ -76,11 +123,16 @@ namespace Kohcha.AvatarHierarchyFormatter
                     File.Move(tempPath, FilePath);
                 }
 
+                HasUnsavedChanges = false;
                 return true;
             }
             catch (System.Exception e)
             {
+                HasUnsavedChanges = true;
                 LastError = $"アイコンの上書き設定を保存できませんでした: {e.Message}";
+
+                // 操作した直後に、操作した本人が見る場所へ出す。
+                // 設定画面のHelpBoxは後から気づくための補助で、これの代わりにはならない
                 Debug.LogWarning($"[AHF] {LastError}\n{FilePath}");
 
                 try
