@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Kohcha.AvatarHierarchyFormatter
 {
-    public class AHFIconOverrideData : ScriptableObject
+    [Serializable]
+    public class AHFIconOverrideData
     {
         public List<AHFIconOverrideEntry> Entries = new List<AHFIconOverrideEntry>();
     }

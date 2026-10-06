@@ -18,7 +18,6 @@ namespace Kohcha.AvatarHierarchyFormatter
         static HierarchyCacheManager()
         {
             EditorApplication.hierarchyChanged += CacheHierarchyObjectData;
-
             CacheHierarchyObjectData();
         }
 

@@ -125,7 +125,7 @@ namespace Kohcha.AvatarHierarchyFormatter
             if (validComponents.Count == 0) return;
 
 
-            bool currentStatus = HierarchyCacheManager.GetEnabledState(validComponents[0]);
+            bool currentStatus = validComponents.Any(HierarchyCacheManager.GetEnabledState);
             bool targetStatus = !currentStatus;
 
             foreach (Component comp in validComponents)

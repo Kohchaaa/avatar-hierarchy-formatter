@@ -24,7 +24,7 @@ namespace Kohcha.AvatarHierarchyFormatter
                 AssetDatabase.CreateFolder(RootPath, "Icons");
             }
 
-            EditorUtility.RevealInFinder(Path);
+            EditorUtility.RevealInFinder(Path + "/");
         }
     }
 }

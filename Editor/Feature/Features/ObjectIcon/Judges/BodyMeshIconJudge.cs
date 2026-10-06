@@ -26,13 +26,17 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         public bool TryJudge(GameObject go, Component[] components, out AHFIconId iconId)
         {
-            if (BodyBasePattern.IsMatch(go.name))
+            // 区切り文字に半角スペースを含めているので、"Body (1)"をそのまま判定すると
+            // "body" + 区切り + 何か に一致して体側になってしまう
+            string name = AHFUtil.StripDuplicateSuffix(go.name);
+
+            if (BodyBasePattern.IsMatch(name))
             {
                 iconId = BodyBaseIconId;
                 return true;
             }
 
-            if (BodyPattern.IsMatch(go.name))
+            if (BodyPattern.IsMatch(name))
             {
                 iconId = BodyIconId;
                 return true;

@@ -20,20 +20,20 @@ namespace Kohcha.AvatarHierarchyFormatter
                 return;
             }
 
-            var iconSize = 16;
-            Rect iconRect = new Rect(
+            float rowHeight = c.SelectionRect.height;
+            Rect hitRect = new Rect(
                 c.SelectionRect.x,
                 c.SelectionRect.y,
-                iconSize,
-                iconSize
+                rowHeight,
+                rowHeight
             );
 
             Event evt = Event.current;
 
-            if (evt.type == EventType.ContextClick && iconRect.Contains(evt.mousePosition))
+            if (evt.type == EventType.ContextClick && hitRect.Contains(evt.mousePosition))
             {
                 evt.Use();
-                PopupWindow.Show(iconRect, new AHFIconPickerPopup(c.InstanceID));
+                PopupWindow.Show(hitRect, new AHFIconPickerPopup(c.InstanceID));
             }
 
             // 上書き先のアイコンが削除・リネームされている場合は、IDだけが残って解決できない。
@@ -58,9 +58,25 @@ namespace Kohcha.AvatarHierarchyFormatter
                 isSelected = Selection.instanceIDs.Contains(c.InstanceID) || pendingId == c.InstanceID;
             }
             bool isHovered = hoverRect.Contains(Event.current.mousePosition);
-            EditorGUI.DrawRect(iconRect, GetRowBackgroundColor(isSelected, isHovered));
+            EditorGUI.DrawRect(hitRect, GetRowBackgroundColor(isSelected, isHovered));
 
+            float iconSize = Mathf.Min(ObjectIconSettingModule.IconSize, rowHeight);
+            float inset = (rowHeight - iconSize) * 0.5f;
+            Rect iconRect = new Rect(hitRect.x + inset, hitRect.y + inset, iconSize, iconSize);
+
+            Color previousColor = GUI.color;
+            GUI.color = GetIconColor();
             GUI.Box(iconRect, new GUIContent(texture), GUIStyle.none);
+            GUI.color = previousColor;
+        }
+
+        private static Color GetIconColor()
+        {
+            if (!ObjectIconSettingModule.IsUseThemeColor) return ObjectIconSettingModule.OriginalColor;
+
+            Color themeColor = GeneralSettingModule.ThemeColor;
+            themeColor.a = 1f;
+            return themeColor;
         }
 
         private static bool TryResolveTexture(in CacheData cacheData, out Texture2D texture)

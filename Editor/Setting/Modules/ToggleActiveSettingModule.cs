@@ -1,4 +1,3 @@
-
 using UnityEditor;
 
 namespace Kohcha.AvatarHierarchyFormatter
@@ -28,7 +27,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         {
             // 有効化
             this.SaveBool(Key_Enabled, IsEnabled);
-            this.LoadFloat(Key_ButtonOffset, ButtonOffset);
+            this.SaveFloat(Key_ButtonOffset, ButtonOffset);
         }
 
         public void OnGUI()

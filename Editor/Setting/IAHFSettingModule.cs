@@ -29,23 +29,23 @@ namespace Kohcha.AvatarHierarchyFormatter
         // ロード
         public static bool LoadBool(this IAHFSettingModule module, string key, bool defaultValue = true)
         {
-            return EditorPrefs.GetBool(AHFSettings.prefix + module.ModuleName + "_" + key, defaultValue);
+            return EditorPrefs.GetBool(module.GetKeyPrefix() + key, defaultValue);
         }
 
         public static int LoadInt(this IAHFSettingModule module, string key, int defaultValue = 0)
         {
-            return EditorPrefs.GetInt(AHFSettings.prefix + module.ModuleName + "_" + key, defaultValue);
+            return EditorPrefs.GetInt(module.GetKeyPrefix() + key, defaultValue);
         }
 
         public static float LoadFloat(this IAHFSettingModule module, string key, float defaultValue = 0f)
         {
-            return EditorPrefs.GetFloat(AHFSettings.prefix + module.ModuleName + "_" + key, defaultValue);
+            return EditorPrefs.GetFloat(module.GetKeyPrefix() + key, defaultValue);
         }
 
         public static string LoadString(this IAHFSettingModule module, string key, string defaultValue = "")
         {
 
-            return EditorPrefs.GetString(AHFSettings.prefix + module.ModuleName + "_" + key, defaultValue);
+            return EditorPrefs.GetString(module.GetKeyPrefix() + key, defaultValue);
         }
 
         public static Color LoadColor(this IAHFSettingModule module, string key, Color defaultColor)
@@ -66,22 +66,22 @@ namespace Kohcha.AvatarHierarchyFormatter
         // セーブ
         public static void SaveBool(this IAHFSettingModule module, string key, bool value)
         {
-            EditorPrefs.SetBool(AHFSettings.prefix + module.ModuleName + "_" + key, value);
+            EditorPrefs.SetBool(module.GetKeyPrefix() + key, value);
         }
 
         public static void SaveInt(this IAHFSettingModule module, string key, int value)
         {
-            EditorPrefs.SetInt(AHFSettings.prefix + module.ModuleName + "_" + key, value);
+            EditorPrefs.SetInt(module.GetKeyPrefix() + key, value);
         }
 
         public static void SaveFloat(this IAHFSettingModule module, string key, float value)
         {
-            EditorPrefs.SetFloat(AHFSettings.prefix + module.ModuleName + "_" + key, value);
+            EditorPrefs.SetFloat(module.GetKeyPrefix() + key, value);
         }
 
         public static void SaveString(this IAHFSettingModule module, string key, string value)
         {
-            EditorPrefs.SetString(AHFSettings.prefix + module.ModuleName + "_" + key, value);
+            EditorPrefs.SetString(module.GetKeyPrefix() + key, value);
         }
 
         public static void SaveColor(this IAHFSettingModule module, string subKey, Color value)

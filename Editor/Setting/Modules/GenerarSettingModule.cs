@@ -17,7 +17,6 @@ namespace Kohcha.AvatarHierarchyFormatter
         // テーマカラー
         private const string Key_ThemeColor = "ThemeColor";
         public static Color ThemeColor = new Color32(128, 148, 174, 100);
-        private const string DefaultColorHEX = "8094AE";
 
         public void Load()
         {
@@ -71,10 +70,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         // オリジナル関数
         public static void ResetToDefault()
         {
-            if (ColorUtility.TryParseHtmlString("#" + DefaultColorHEX, out Color defaultColor))
-            {
-                ThemeColor = defaultColor;
-            }
+            ThemeColor = new Color32(128, 148, 174, 100);
         }
     }
 }
