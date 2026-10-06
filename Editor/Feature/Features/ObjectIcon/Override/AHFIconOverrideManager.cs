@@ -169,10 +169,27 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         private static string GetGid(int instanceId) => GlobalObjectId.GetGlobalObjectIdSlow(instanceId).ToString();
 
+        // FirstOrDefault(e => ... id ...) だと、ラムダがローカルのidをキャプチャするため
+        // 呼び出しのたびにクロージャが確保され、さらにIEnumerable<T>経由の列挙で
+        // List<T>の列挙子がボックス化されてもう1つ確保される。
+        // この関数はキャッシュ構築で全オブジェクトについて呼ばれるので、素のforで回して確保を避ける。
+        // 計算量はO(エントリ数)のまま変わらない
+        private static AHFIconOverrideEntry FindEntry(string globalObjectId)
+        {
+            var entries = _data.Entries;
+
+            for (int i = 0; i < entries.Count; i++)
+            {
+                if (entries[i].GlobalObjectId == globalObjectId) return entries[i];
+            }
+
+            return null;
+        }
+
         public static bool TryGetOverride(int instanceId, out AHFIconId iconId)
         {
             string id = GetGid(instanceId);
-            var entry = _data.Entries.FirstOrDefault(e => e.GlobalObjectId == id);
+            var entry = FindEntry(id);
 
             if (entry != null)
             {
