@@ -32,12 +32,16 @@ namespace Kohcha.AvatarHierarchyFormatter
         private static bool HasToggles =>
             ToggleActiveSettingModule.IsEnabled || ToggleEOSettingModule.IsEnabled;
 
+        private static AHFObjectScope VisibleScope =>
+            GeneralSettingModule.IsShowOutsideAvatar ? AHFObjectScope.All : AHFObjectScope.InAvatar;
+
         private static void OnHierarchyWindowGUI(int instanceID, Rect selectionRect)
         {
             if (!GeneralSettingModule.IsEnabled_Plugin) return;
 
             // 各Featureはキャッシュを読むだけなので、無ければここで作っておく
-            if (HierarchyCacheManager.TryGetOrCreate(instanceID, out _))
+            if (HierarchyCacheManager.TryGetOrCreate(instanceID, out var cacheData)
+                && (cacheData.Scope & VisibleScope) != 0)
             {
                 var context = new AHFLayoutContext(instanceID, selectionRect, 4f);
 
