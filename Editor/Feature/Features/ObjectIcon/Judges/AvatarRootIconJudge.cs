@@ -13,7 +13,8 @@ namespace Kohcha.AvatarHierarchyFormatter
 
         public bool TryJudge(GameObject go, Component[] components, out AHFIconId iconId)
         {
-            if (components.Any(c => c is VRCAvatarDescriptor))
+            // ネストしたDescriptorはアバタールートとして扱わない
+            if (go.transform.parent == null && components.Any(c => c is VRCAvatarDescriptor))
             {
                 iconId = IconId;
                 return true;

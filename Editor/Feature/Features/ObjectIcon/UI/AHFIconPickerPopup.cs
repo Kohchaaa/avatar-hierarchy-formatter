@@ -121,7 +121,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 
             if (shouldClose)
             {
-                HierarchyCacheManager.CacheHierarchyObjectData();
+                HierarchyCacheManager.ClearCache();
                 EditorApplication.RepaintHierarchyWindow();
                 editorWindow.Close();
             }

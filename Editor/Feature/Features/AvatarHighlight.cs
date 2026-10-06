@@ -13,7 +13,8 @@ namespace Kohcha.AvatarHierarchyFormatter
         {
             if (!AvatarHighlightSettingModule.IsEnabled) return;
 
-            if (!HierarchyCacheManager.ItemCaches.TryGetValue(c.InstanceID, out var cacheData))
+            if (!HierarchyCacheManager.ItemCaches.TryGetValue(c.InstanceID, out var cacheData)
+                || cacheData.Scope != AHFObjectScope.InAvatar)
             {
                 return;
             }
@@ -45,7 +46,7 @@ namespace Kohcha.AvatarHierarchyFormatter
                 AvatarHighlightSettingModule.AvatarRootLineWeight
             );
 
-            if (cacheData.AvatarRootId == c.InstanceID)
+            if (cacheData.IndentLevel == 0)
             {
                 if (AvatarHighlightSettingModule.IsUseAvatarRootLine)
                 {
