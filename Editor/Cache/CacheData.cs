@@ -4,7 +4,14 @@ namespace Kohcha.AvatarHierarchyFormatter
 {
     public struct CacheData
     {
-        public int AvatarRootId;
+        // アバター外のオブジェクトはnull
+        public int? AvatarRootId;
+
+        public AHFObjectScope Scope => ScopeOf(AvatarRootId);
+
+        // キャッシュ構築中（CacheDataを作る前）にJudgeへ渡す時も、この1か所で導出する
+        public static AHFObjectScope ScopeOf(int? avatarRootId) =>
+            avatarRootId.HasValue ? AHFObjectScope.InAvatar : AHFObjectScope.OutsideAvatar;
 
         public int IndentLevel;
         public bool IsLastChild;
@@ -18,7 +25,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         public AHFIconId? ObjectIconId;
         public AHFIconId? OverrideIconId;
 
-        public CacheData(int id, int indentLevel, bool isLastChild, bool[] flags, bool hasChildren, ComponentIconInfo[] componentIcons, AHFIconId? objectIconId, AHFIconId? overrideIconId)
+        public CacheData(int? id, int indentLevel, bool isLastChild, bool[] flags, bool hasChildren, ComponentIconInfo[] componentIcons, AHFIconId? objectIconId, AHFIconId? overrideIconId)
         {
             AvatarRootId = id;
             IndentLevel = indentLevel;

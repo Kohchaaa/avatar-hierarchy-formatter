@@ -26,10 +26,12 @@ namespace Kohcha.AvatarHierarchyFormatter
             Judges.Add(new BodyMeshIconJudge());
         }
 
-        public static bool TryJudge(GameObject go, Component[] components, out AHFIconId iconId)
+        public static bool TryJudge(GameObject go, Component[] components, AHFObjectScope scope, out AHFIconId iconId)
         {
             foreach (var judge in Judges)
             {
+                if ((judge.Scope & scope) == 0) continue;
+
                 if (judge.TryJudge(go, components, out iconId))
                 {
                     return true;

@@ -72,7 +72,7 @@ namespace Kohcha.AvatarHierarchyFormatter
 
             ComponentIconInfo[] icons = ConvertToIconInfo(components);
 
-            AHFIconId? objectIconId = AHFObjectIconJudgeManager.TryJudge(current.gameObject, components, out var judgedIconId)
+            AHFIconId? objectIconId = AHFObjectIconJudgeManager.TryJudge(current.gameObject, components, AHFObjectScope.InAvatar, out var judgedIconId)
                 ? judgedIconId
                 : (AHFIconId?)null;
 
