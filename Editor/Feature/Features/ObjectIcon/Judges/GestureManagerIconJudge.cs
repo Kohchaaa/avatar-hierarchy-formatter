@@ -6,6 +6,7 @@ namespace Kohcha.AvatarHierarchyFormatter
     public class GestureManagerIconJudge : IAHFObjectIconJudge
     {
         public string JudgeName => "GestureManager";
+        public AHFObjectScope Scope => AHFObjectScope.All;
 
         private static readonly AHFIconId IconId = new AHFIconId("gesture_manager");
 

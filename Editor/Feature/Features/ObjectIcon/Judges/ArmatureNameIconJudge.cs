@@ -6,6 +6,7 @@ namespace Kohcha.AvatarHierarchyFormatter
     public class ArmatureNameIconJudge : IAHFObjectIconJudge
     {
         public string JudgeName => "ArmatureName";
+        public AHFObjectScope Scope => AHFObjectScope.InAvatar;
 
         private static readonly AHFIconId IconId = new AHFIconId("armature");
 

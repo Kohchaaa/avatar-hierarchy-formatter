@@ -7,7 +7,7 @@ namespace Kohcha.AvatarHierarchyFormatter
     public static partial class AHFUtil
     {
         // GetComponents<T>()（引数なし）は呼ぶたびに配列を新規確保する。
-        // この関数はキャッシュ構築でヒエラルキーの全オブジェクトについて呼ばれるので、
+        // この関数は行のキャッシュを作るたびに呼ばれるので、
         // リストに詰めるオーバーロードを使い回して確保を避ける。
         // 使い回しなので、この関数の実行中に同じ関数を呼ぶ形（再帰）にしてはいけない
         private static readonly List<Component> _componentBuffer = new List<Component>();

@@ -6,6 +6,7 @@ namespace Kohcha.AvatarHierarchyFormatter
     public class AudioIconJudge : IAHFObjectIconJudge
     {
         public string JudgeName => "Audio";
+        public AHFObjectScope Scope => AHFObjectScope.All;
 
         private static readonly AHFIconId IconId = new AHFIconId("audio");
 

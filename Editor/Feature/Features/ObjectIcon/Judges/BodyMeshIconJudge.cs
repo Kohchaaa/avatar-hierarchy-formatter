@@ -6,6 +6,7 @@ namespace Kohcha.AvatarHierarchyFormatter
     public class BodyMeshIconJudge : IAHFObjectIconJudge
     {
         public string JudgeName => "BodyMesh";
+        public AHFObjectScope Scope => AHFObjectScope.InAvatar;
 
         private static readonly AHFIconId BodyIconId = new AHFIconId("body");
         private static readonly AHFIconId BodyBaseIconId = new AHFIconId("body_base");

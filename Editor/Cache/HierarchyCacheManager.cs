@@ -1,11 +1,6 @@
-
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-using VRC.Core;
 using VRC.SDK3.Avatars.Components;
 
 namespace Kohcha.AvatarHierarchyFormatter
@@ -15,64 +10,54 @@ namespace Kohcha.AvatarHierarchyFormatter
     {
         public static Dictionary<int, CacheData> ItemCaches = new Dictionary<int, CacheData>();
 
+        // Play中はヒエラルキーに表示されるが、対象外にする
+        private const string DontDestroyOnLoadSceneName = "DontDestroyOnLoad";
+
         static HierarchyCacheManager()
         {
-            EditorApplication.hierarchyChanged += CacheHierarchyObjectData;
-            CacheHierarchyObjectData();
+            EditorApplication.hierarchyChanged += ClearCache;
         }
 
-        public static void CacheHierarchyObjectData()
+        // キャッシュは描画された行の分だけ遅延で作る（TryGetOrCreate）。
+        // hierarchyWindowItemOnGUIは実際に描画される行にしか呼ばれないので、
+        // ヒエラルキー全体を走査せずに計算対象を画面内の行に絞れる
+        public static void ClearCache()
         {
             ItemCaches.Clear();
-
-            var descriptors = UnityEngine.Object.FindObjectsByType<VRCAvatarDescriptor>(
-                FindObjectsInactive.Include,
-                FindObjectsSortMode.None
-            );
-
-            var processedRoots = new HashSet<Transform>();
-
-            foreach (var desc in descriptors)
-            {
-                if (desc == null) continue;
-                Transform rootXform = desc.transform;
-                if (processedRoots.Contains(rootXform)) continue;
-
-                processedRoots.Add(rootXform);
-                int rootId = rootXform.gameObject.GetInstanceID();
-                List<bool> currentLineStates = new List<bool>();
-                BuildTreeCache(rootXform, rootId, 0, false, currentLineStates);
-            }
-
-            var currentStage = PrefabStageUtility.GetCurrentPrefabStage();
-            if (currentStage != null && currentStage.prefabContentsRoot != null)
-            {
-                var prefabDescriptors = currentStage.prefabContentsRoot.GetComponentsInChildren<VRCAvatarDescriptor>(true);
-
-                foreach (var desc in prefabDescriptors)
-                {
-                    if (desc == null) continue;
-                    Transform rootXform = desc.transform;
-                    if (processedRoots.Contains(rootXform)) continue;
-
-                    processedRoots.Add(rootXform);
-                    int rootId = rootXform.gameObject.GetInstanceID();
-                    List<bool> currentLineStates = new List<bool>();
-                    BuildTreeCache(rootXform, rootId, 0, false, currentLineStates);
-                }
-            }
         }
 
-        private static void BuildTreeCache(Transform current, int rootId, int depth, bool isLastChild, List<bool> lineStates)
+        public static bool TryGetOrCreate(int instanceID, out CacheData cacheData)
         {
-            int currentId = current.gameObject.GetInstanceID();
+            if (ItemCaches.TryGetValue(instanceID, out cacheData)) return true;
+
+            var go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+            if (go == null || go.scene.name == DontDestroyOnLoadSceneName) return false;
+
+            cacheData = CreateCacheData(go);
+            ItemCaches[instanceID] = cacheData;
+            return true;
+        }
+
+        private static CacheData CreateCacheData(GameObject go)
+        {
+            Transform current = go.transform;
+            int currentId = go.GetInstanceID();
+
+            // アバターはヒエラルキー1層目にVRCAvatarDescriptorがあるものだけ。
+            // ネストしたDescriptorは新しいアバターとみなさず、外側のアバター内の一オブジェクトとして扱う
+            Transform root = current.root;
+            int? avatarRootId = root.GetComponent<VRCAvatarDescriptor>() != null
+                ? root.gameObject.GetInstanceID()
+                : (int?)null;
+
+            AHFObjectScope scope = CacheData.ScopeOf(avatarRootId);
 
             // コンポーネント収集
-            var components = AHFUtil.GetFilteredComponents(current.gameObject);
+            var components = AHFUtil.GetFilteredComponents(go);
 
             ComponentIconInfo[] icons = ConvertToIconInfo(components);
 
-            AHFIconId? objectIconId = AHFObjectIconJudgeManager.TryJudge(current.gameObject, components, out var judgedIconId)
+            AHFIconId? objectIconId = AHFObjectIconJudgeManager.TryJudge(go, components, scope, out var judgedIconId)
                 ? judgedIconId
                 : (AHFIconId?)null;
 
@@ -80,38 +65,32 @@ namespace Kohcha.AvatarHierarchyFormatter
                 ? overriddenIconId
                 : (AHFIconId?)null;
 
-            int childCount = current.childCount;
-            bool hasChildren = (childCount > 0);
+            int depth = 0;
+            for (var p = current.parent; p != null; p = p.parent) depth++;
 
+            // flags[i]は、深さi+1にある祖先（末尾は自分）が最後の子でないか。
+            // その深さの縦線を下まで伸ばすかどうかに使う
             bool[] flags = new bool[depth];
-            for (int i = 0; i < depth; i++)
+            Transform node = current;
+            for (int i = depth - 1; i >= 0; i--)
             {
-                flags[i] = lineStates[i];
+                flags[i] = !IsLastChild(node);
+                node = node.parent;
             }
 
-            ItemCaches[currentId] = new CacheData(
-                rootId,
+            return new CacheData(
+                avatarRootId,
                 depth,
-                isLastChild,
+                current.parent != null && IsLastChild(current),
                 flags,
-                hasChildren,
+                current.childCount > 0,
                 icons,
                 objectIconId,
                 overrideIconId
             );
-
-            for (int i = 0; i < childCount; i++)
-            {
-                Transform child = current.GetChild(i);
-
-                bool childIsLast = (i == childCount - 1);
-
-                lineStates.Add(!childIsLast);
-
-                BuildTreeCache(child, rootId, depth + 1, childIsLast, lineStates);
-
-                lineStates.RemoveAt(lineStates.Count - 1);
-            }
         }
+
+        private static bool IsLastChild(Transform t) =>
+            t.GetSiblingIndex() == t.parent.childCount - 1;
     }
 }

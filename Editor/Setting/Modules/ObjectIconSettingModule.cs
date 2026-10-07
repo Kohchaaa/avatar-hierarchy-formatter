@@ -173,7 +173,7 @@ namespace Kohcha.AvatarHierarchyFormatter
         {
             if (removed <= 0) return;
 
-            HierarchyCacheManager.CacheHierarchyObjectData();
+            HierarchyCacheManager.ClearCache();
             EditorApplication.RepaintHierarchyWindow();
         }
 

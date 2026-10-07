@@ -6,6 +6,7 @@ namespace Kohcha.AvatarHierarchyFormatter
     public class FaceEmoIconJudge : IAHFObjectIconJudge
     {
         public string JudgeName => "FaceEmo";
+        public AHFObjectScope Scope => AHFObjectScope.All;
 
         private static readonly AHFIconId IconId = new AHFIconId("face_emo");
 
